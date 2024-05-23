@@ -1,0 +1,233 @@
+package com.omarabdelrehim8.accounts.service;
+
+import com.omarabdelrehim8.accounts.dto.CustomerDto;
+import com.omarabdelrehim8.accounts.entity.Account;
+import com.omarabdelrehim8.accounts.entity.Customer;
+import com.omarabdelrehim8.accounts.exception.CustomerAlreadyExistsException;
+import com.omarabdelrehim8.accounts.exception.ResourceNotFoundException;
+import com.omarabdelrehim8.accounts.repository.AccountRepository;
+import com.omarabdelrehim8.accounts.repository.CustomerRepository;
+import com.omarabdelrehim8.accounts.service.impl.AccountServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+public class AccountServiceTest {
+
+    @Mock
+    private AccountRepository accountRepository;
+
+    @Mock
+    private CustomerRepository customerRepository;
+
+    @InjectMocks
+    private AccountServiceImpl accountService;
+
+    private CustomerDto customerDto;
+    private Customer customer;
+
+    @BeforeEach
+    void init() {
+        customerDto = new CustomerDto();
+        customerDto.setName("Regis Aether");
+        customerDto.setEmail("regisaether@gmail.com");
+        customerDto.setMobileNumber("1234567891");
+
+        customer = new Customer(1L, "Regis Aether", "regisaether@gmail.com", "1234567891");
+    }
+
+    @Test
+    void Should_Create_An_Account_Instance() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+        Method methodCall = accountService.getClass().getDeclaredMethod("createAccountInstance", null);
+        methodCall.setAccessible(true);
+
+        Account expectedAccount = (Account) methodCall.invoke(accountService, null);
+
+        assertThat(expectedAccount).isInstanceOf(Account.class);
+        assertThat(expectedAccount.getAccountNumber()).isNotZero();
+        assertThat(expectedAccount.getAccountType()).isEqualTo("Savings");
+        assertThat(expectedAccount.getBranchAddress()).isEqualTo("123 Main Street, New York");
+    }
+
+    @Test
+    void Create_New_Account_Should_Create_New_Account_For_Given_Customer() {
+
+        when(customerRepository.findByMobileNumberOrEmail(eq("1234567891"), eq("regisaether@gmail.com")))
+                .thenReturn(Optional.empty());
+
+        accountService.createAccountForNewCustomer(customerDto);
+
+        verify(customerRepository, times(1)).save(any(Customer.class));
+    }
+
+    @Test
+    void Create_New_Account_Should_Throw_Customer_Already_Registered_With_Inputted_Mobile_Number_And_Email(){
+        when(customerRepository.findByMobileNumberOrEmail(eq("1234567891"), eq("regisaether@gmail.com")))
+                .thenReturn(Optional.ofNullable(customer));
+
+        assertThatThrownBy(() -> accountService.createAccountForNewCustomer(customerDto))
+                .isInstanceOf(CustomerAlreadyExistsException.class)
+                .hasMessage("Customer is already registered with the given mobile number and email. " +
+                        "Please change them and try again");
+
+    }
+
+    @Test
+    void Create_New_Account_Should_Throw_Customer_Already_Registered_With_Inputted_Email(){
+        customerDto.setMobileNumber("1234567892");
+
+        when(customerRepository.findByMobileNumberOrEmail(eq("1234567892"), eq("regisaether@gmail.com")))
+                .thenReturn(Optional.ofNullable(customer));
+
+        assertThatThrownBy(() -> accountService.createAccountForNewCustomer(customerDto))
+                .isInstanceOf(CustomerAlreadyExistsException.class)
+                .hasMessage("Customer is already registered with the given email. " +
+                        "Please change it and try again");
+
+    }
+
+    @Test
+    void Create_New_Account_Should_Throw_Customer_Already_Registered_With_Inputted_Mobile_Number(){
+        customerDto.setEmail("sylvieidrath@gmail.com");
+
+        when(customerRepository.findByMobileNumberOrEmail(eq("1234567891"), eq("sylvieidrath@gmail.com")))
+                .thenReturn(Optional.ofNullable(customer));
+
+        assertThatThrownBy(() -> accountService.createAccountForNewCustomer(customerDto))
+                .isInstanceOf(CustomerAlreadyExistsException.class)
+                .hasMessage("Customer is already registered with the given mobile number. " +
+                        "Please change it and try again");
+
+    }
+
+    @Test
+    void Should_Add_New_Account_For_Given_Customer() {
+
+        when(customerRepository.findByNameAndMobileNumberAndEmail(eq("Regis Aether"), eq("1234567891"), eq("regisaether@gmail.com")))
+                .thenReturn(Optional.ofNullable(customer));
+
+        accountService.addAccountForExistingCustomer(customerDto);
+
+        verify(accountRepository, times(1)).save(any(Account.class));
+    }
+
+    @Test
+    void Add_Account_Should_Throw_Resources_Not_Found_Exception() {
+        assertThatThrownBy(() -> accountService.addAccountForExistingCustomer(customerDto))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Customer not found with the given name, mobile number and email");
+    }
+
+    @Test
+    void Should_Return_Accounts_List_For_Given_Mobile_Number() {
+        List<Account> accountsList = List.of(new Account());
+
+        when(accountRepository.findAccountsByMobileNumber(anyString()))
+                .thenReturn(Optional.of(accountsList));
+
+        assertThat(accountService.fetchAccountsDetails(anyString()))
+                .isInstanceOf(List.class);
+    }
+
+    @Test
+    void Fetching_Accounts_Should_Throw_Resources_Not_Found_Exception() {
+        assertThatThrownBy(() -> accountService.fetchAccountsDetails(anyString()))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Customer not found with the given mobile number");
+    }
+
+    @Test
+    void Should_Return_True_After_Only_Deleting_Account() {
+        Account testAccount = new Account();
+        testAccount.setCustomer(customer);
+
+        when(accountRepository.findByAccountNumber(anyLong()))
+                .thenReturn(Optional.of(testAccount));
+
+        when(accountRepository.countAccountsByCustomerId(customer.getCustomerId()))
+                .thenReturn(2);
+
+        assertThat(accountService.deleteAccount(anyLong())).isTrue();
+
+        verify(accountRepository, times(1)).delete(testAccount);
+        verify(customerRepository, never()).deleteById(customer.getCustomerId());
+    }
+
+    @Test
+    void Should_Return_True_After_Deleting_Both_Account_And_Customer() {
+        Account testAccount = new Account();
+        testAccount.setCustomer(customer);
+
+        when(accountRepository.findByAccountNumber(anyLong()))
+                .thenReturn(Optional.of(testAccount));
+
+        when(accountRepository.countAccountsByCustomerId(customer.getCustomerId()))
+                .thenReturn(1);
+
+        assertThat(accountService.deleteAccount(anyLong())).isEqualTo(true);
+
+        verify(accountRepository, times(1)).delete(testAccount);
+        verify(customerRepository, times(1)).deleteById(customer.getCustomerId());
+    }
+
+    @Test
+    void Deleting_Account_Should_Throw_Resources_Not_Found_Exception() {
+        assertThatThrownBy(() -> accountService.deleteAccount(anyLong()))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Account not found with the given account number");
+    }
+
+    @Test
+    void Should_Return_Customer_Details() {
+        when(customerRepository.findByMobileNumber(customer.getMobileNumber()))
+                .thenReturn(Optional.ofNullable(customer));
+
+        assertThat(accountService.fetchCustomerDetails(customer.getMobileNumber()))
+                .isInstanceOf(CustomerDto.class)
+                .extracting(CustomerDto::getMobileNumber)
+                .isEqualTo("1234567891");
+    }
+
+    @Test
+    void Fetching_Customer_Details_Should_Throw_Resources_Not_Found_Exception() {
+        assertThatThrownBy(() -> accountService.fetchCustomerDetails(customer.getMobileNumber()))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Customer not found with the given mobile number");
+    }
+
+    @Test
+    void Should_Return_True_After_Updating_Customer_Details() {
+        when(customerRepository.findById(customerDto.getCustomerId()))
+                .thenReturn(Optional.ofNullable(customer));
+
+        assertThat(accountService.updateCustomerDetails(customerDto)).isTrue();
+
+        verify(customerRepository, times(1)).save(customer);
+    }
+
+    @Test
+    void Updating_Customer_Details_Should_Throw_Resources_Not_Found_Exception() {
+        assertThatThrownBy(() -> accountService.updateCustomerDetails(customerDto))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage("Customer not found with the given customer id");
+    }
+}
