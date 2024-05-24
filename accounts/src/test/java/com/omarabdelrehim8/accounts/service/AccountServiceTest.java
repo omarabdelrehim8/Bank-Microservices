@@ -57,10 +57,10 @@ public class AccountServiceTest {
     @Test
     void Should_Create_An_Account_Instance() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        Method methodCall = accountService.getClass().getDeclaredMethod("createAccountInstance", null);
+        Method methodCall = accountService.getClass().getDeclaredMethod("createAccountInstance");
         methodCall.setAccessible(true);
 
-        Account expectedAccount = (Account) methodCall.invoke(accountService, null);
+        Account expectedAccount = (Account) methodCall.invoke(accountService);
 
         assertThat(expectedAccount).isInstanceOf(Account.class);
         assertThat(expectedAccount.getAccountNumber()).isNotZero();
@@ -203,7 +203,7 @@ public class AccountServiceTest {
 
         assertThat(accountService.fetchCustomerDetails(customer.getMobileNumber()))
                 .isInstanceOf(CustomerDto.class)
-                .extracting(CustomerDto::getMobileNumber)
+                .extracting("mobileNumber")
                 .isEqualTo("1234567891");
     }
 
