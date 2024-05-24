@@ -25,6 +25,7 @@ public class CardServiceImpl implements CardService {
     public CardDto createDebitCard(Long customerId) {
         CardDto cardDto = new CardDto();
 
+        // Cards count should be less than 2 to create a new Card
         if (cardRepository.countByCustomerIdAndCardType(customerId, DEBIT_CARD) < 2 ) {
             Card card = cardRepository.save(createNewCard(customerId, DEBIT_CARD));
             CardMapper.mapToCardDto(card, cardDto);
@@ -39,6 +40,7 @@ public class CardServiceImpl implements CardService {
     public CardDto createCreditCard(Long customerId) {
         CardDto cardDto = new CardDto();
 
+        // Cards count should be less than 3 to create a new Card
         if (cardRepository.countByCustomerIdAndCardType(customerId, CREDIT_CARD) < 3) {
             Card card = cardRepository.save(createNewCard(customerId, CREDIT_CARD));
             CardMapper.mapToCardDto(card, cardDto);
