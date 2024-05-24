@@ -72,7 +72,7 @@ public class CardController {
 
     @PutMapping("/update/{cardNumber}")
     @JsonView(CardView.OnUpdate.class)
-    public ResponseEntity<?> updateCardTotalLimit (HttpServletRequest request,
+    public ResponseEntity<?> updateCardPurchaseLimit (HttpServletRequest request,
 
                                                    @PathVariable
                                                    @NotBlank(message = "Card number is required")
