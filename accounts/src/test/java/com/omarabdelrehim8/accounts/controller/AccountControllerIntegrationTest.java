@@ -20,6 +20,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -43,7 +44,7 @@ public class AccountControllerIntegrationTest {
     @ServiceConnection
     private static final MySQLContainer mysql = new MySQLContainer<>(DockerImageName.parse("mysql"))
             .withDatabaseName("accountsdb")
-            .withCopyFileToContainer(MountableFile.forClasspathResource("schema-test.sql"), "/docker-entrypoint-initdb.d/");
+            .withCopyFileToContainer(MountableFile.forClasspathResource("schema.sql"), "/docker-entrypoint-initdb.d/");
 
     @Autowired
     AccountRepository accountRepository;

@@ -45,7 +45,7 @@ public class AccountRepositoryIntegrationTest {
     @ServiceConnection
     private static final MySQLContainer mysql = new MySQLContainer<>(DockerImageName.parse("mysql"))
             .withDatabaseName("accountsdb")
-            .withCopyFileToContainer(MountableFile.forClasspathResource("schema-test.sql"), "/docker-entrypoint-initdb.d/");
+            .withCopyFileToContainer(MountableFile.forClasspathResource("schema.sql"), "/docker-entrypoint-initdb.d/");
 
     @Test
     @Order(1)
