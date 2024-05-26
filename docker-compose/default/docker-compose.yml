@@ -1,0 +1,54 @@
+services:
+  accountsdb:
+    container_name: accountsdb
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: accountsdb
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  cardsdb:
+    container_name: cardsdb
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_DATABASE: cardsdb
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  accounts:
+    image: "omarabdelrehim8/accounts:v1"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
+    depends_on:
+      accountsdb:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  cards:
+    image: "omarabdelrehim8/cards:v1"
+    container_name: cards-ms
+    ports:
+      - "9000:9000"
+    environment:
+      SPRING_APPLICATION_NAME: "cards"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"
+    depends_on:
+      cardsdb:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+networks:
+  bank:
+    driver: "bridge"
