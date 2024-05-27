@@ -251,6 +251,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
+  /api/accounts/build-version:
+    get:
+      tags:
+        - CRUD REST APIs For Accounts Microservice
+      summary: Get Build Version
+      description: REST API to get application's build version
+      operationId: getBuildVersion
+      responses:
+        '200':
+          description: HTTP Status OK
+        '500':
+          description: HTTP Status INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_Response'
+  /api/accounts/java-version:
+    get:
+      tags:
+        - CRUD REST APIs For Accounts Microservice
+      summary: Get Java Version
+      description: REST API to get utilized java version
+      operationId: getJavaVersion
+      responses:
+        '200':
+          description: HTTP Status OK
+        '500':
+          description: HTTP Status INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_Response'
+  /api/accounts/contact-info:
+    get:
+      tags:
+        - CRUD REST APIs For Accounts Microservice
+      summary: Get Contact Info
+      description: REST API to get contact info details for reaching out in case of any issues
+      operationId: getContactInfo
+      responses:
+        '200':
+          description: HTTP Status OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact_Info'
+        '500':
+          description: HTTP Status INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_Response'
 components:
   schemas:
     Account:
@@ -442,3 +494,21 @@ components:
           type: string
           description: Status Message in the response
       description: Schema to hold successful Response Information
+    Contact_Info:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Welcome Message
+        contactDetails:
+          type: object
+          description: Contact Details of application owners or developers
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+        onCallSupport:
+          type: string
+          description: Phone number to call for support
+      description: Schema to hold Contact Information
