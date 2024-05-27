@@ -1,8 +1,8 @@
 package com.omarabdelrehim8.cards.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.omarabdelrehim8.cards.dto.constraints.CardValidation;
 import com.omarabdelrehim8.cards.dto.constraints.CardView;
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 

@@ -1,18 +1,22 @@
 package com.omarabdelrehim8.cards.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.omarabdelrehim8.cards.dto.CardDto;
+import com.omarabdelrehim8.cards.dto.CardsContactInfoDto;
 import com.omarabdelrehim8.cards.dto.ErrorResponseDto;
 import com.omarabdelrehim8.cards.dto.ResponseDto;
 import com.omarabdelrehim8.cards.dto.constraints.CardValidation;
 import com.omarabdelrehim8.cards.dto.constraints.CardView;
 import com.omarabdelrehim8.cards.service.CardService;
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +35,15 @@ import static com.omarabdelrehim8.cards.constants.CardConstants.*;
 public class CardController {
 
     private final CardService cardService;
+
+    @Value("${build.version}")
+    private String buildVersion;
+
+    @Autowired
+    private Environment environment;
+
+    @Autowired
+    private CardsContactInfoDto cardsContactInfoDto;
 
     @PostMapping("/{customerId}/create/debit-card")
     public ResponseEntity<ResponseDto> createDebitCard (@PathVariable
@@ -142,5 +155,26 @@ public class CardController {
                             MESSAGE_417_DELETE,
                             LocalDateTime.now()));
         }
+    }
+
+    @GetMapping("/build-version")
+    public ResponseEntity<String> getBuildVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
+    }
+
+    @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(environment.getProperty("JAVA_HOME"));
+    }
+
+    @GetMapping("/contact-info")
+    public ResponseEntity<CardsContactInfoDto> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cardsContactInfoDto);
     }
 }

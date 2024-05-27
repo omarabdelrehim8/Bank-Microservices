@@ -1,7 +1,7 @@
 package com.omarabdelrehim8.cards.dto;
 
-import com.omarabdelrehim8.cards.dto.constraints.CardView;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.omarabdelrehim8.cards.dto.constraints.CardView;
 import lombok.*;
 
 @Data
