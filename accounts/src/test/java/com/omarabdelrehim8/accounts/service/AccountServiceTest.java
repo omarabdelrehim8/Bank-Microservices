@@ -1,5 +1,6 @@
 package com.omarabdelrehim8.accounts.service;
 
+import com.omarabdelrehim8.accounts.dto.AccountCreationResponseDto;
 import com.omarabdelrehim8.accounts.dto.CustomerDto;
 import com.omarabdelrehim8.accounts.entity.Account;
 import com.omarabdelrehim8.accounts.entity.Customer;
@@ -43,6 +44,7 @@ public class AccountServiceTest {
 
     private CustomerDto customerDto;
     private Customer customer;
+    private AccountCreationResponseDto response;
 
     @BeforeEach
     void init() {
@@ -73,10 +75,11 @@ public class AccountServiceTest {
 
         when(customerRepository.findByMobileNumberOrEmail(eq("1234567891"), eq("regisaether@gmail.com")))
                 .thenReturn(Optional.empty());
+        when(customerRepository.saveAndFlush(any(Customer.class))).thenReturn(customer);
 
-        accountService.createAccountForNewCustomer(customerDto);
+        response = accountService.createAccountForNewCustomer(customerDto);
 
-        verify(customerRepository, times(1)).save(any(Customer.class));
+        assertThat(response).extracting("customerId", "accountType").containsExactly(1L, "Savings");
     }
 
     @Test
@@ -125,9 +128,10 @@ public class AccountServiceTest {
         when(customerRepository.findByNameAndMobileNumberAndEmail(eq("Regis Aether"), eq("1234567891"), eq("regisaether@gmail.com")))
                 .thenReturn(Optional.ofNullable(customer));
 
-        accountService.addAccountForExistingCustomer(customerDto);
+        response = accountService.addAccountForExistingCustomer(customerDto);
 
         verify(accountRepository, times(1)).save(any(Account.class));
+        assertThat(response).extracting("customerId", "accountType").containsExactly(1L, "Savings");
     }
 
     @Test
@@ -141,18 +145,18 @@ public class AccountServiceTest {
     void Should_Return_Accounts_List_For_Given_Mobile_Number() {
         List<Account> accountsList = List.of(new Account());
 
-        when(accountRepository.findAccountsByMobileNumber(anyString()))
+        when(accountRepository.findByCustomerId(anyLong()))
                 .thenReturn(Optional.of(accountsList));
 
-        assertThat(accountService.fetchAccountsDetails(anyString()))
+        assertThat(accountService.fetchAccountsDetails(anyLong()))
                 .isInstanceOf(List.class);
     }
 
     @Test
     void Fetching_Accounts_Should_Throw_Resources_Not_Found_Exception() {
-        assertThatThrownBy(() -> accountService.fetchAccountsDetails(anyString()))
+        assertThatThrownBy(() -> accountService.fetchAccountsDetails(anyLong()))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessage("Customer not found with the given mobile number");
+                .hasMessage("Customer not found with the given customer id");
     }
 
     @Test
@@ -163,13 +167,13 @@ public class AccountServiceTest {
         when(accountRepository.findByAccountNumber(anyLong()))
                 .thenReturn(Optional.of(testAccount));
 
-        when(accountRepository.countAccountsByCustomerId(customer.getCustomerId()))
+        when(accountRepository.countAccountsByCustomerId(customer.getId()))
                 .thenReturn(2);
 
         assertThat(accountService.deleteAccount(anyLong())).isTrue();
 
         verify(accountRepository, times(1)).delete(testAccount);
-        verify(customerRepository, never()).deleteById(customer.getCustomerId());
+        verify(customerRepository, never()).deleteById(customer.getId());
     }
 
     @Test
@@ -180,13 +184,13 @@ public class AccountServiceTest {
         when(accountRepository.findByAccountNumber(anyLong()))
                 .thenReturn(Optional.of(testAccount));
 
-        when(accountRepository.countAccountsByCustomerId(customer.getCustomerId()))
+        when(accountRepository.countAccountsByCustomerId(customer.getId()))
                 .thenReturn(1);
 
         assertThat(accountService.deleteAccount(anyLong())).isEqualTo(true);
 
         verify(accountRepository, times(1)).delete(testAccount);
-        verify(customerRepository, times(1)).deleteById(customer.getCustomerId());
+        verify(customerRepository, times(1)).deleteById(customer.getId());
     }
 
     @Test

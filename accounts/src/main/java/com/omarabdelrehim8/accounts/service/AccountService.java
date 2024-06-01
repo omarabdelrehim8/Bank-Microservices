@@ -1,6 +1,7 @@
 package com.omarabdelrehim8.accounts.service;
 
 import com.omarabdelrehim8.accounts.dto.AccountDto;
+import com.omarabdelrehim8.accounts.dto.AccountCreationResponseDto;
 import com.omarabdelrehim8.accounts.dto.CustomerDto;
 
 import java.util.List;
@@ -12,22 +13,22 @@ public interface AccountService {
      *
      * @param customerDto - CustomerDto Object
      */
-    void createAccountForNewCustomer(CustomerDto customerDto);
+    AccountCreationResponseDto createAccountForNewCustomer(CustomerDto customerDto);
 
     /**
      * Adds New Account for Existing Customer
      *
      * @param customerDto - CustomerDto Object
      */
-    void addAccountForExistingCustomer(CustomerDto customerDto);
+    AccountCreationResponseDto addAccountForExistingCustomer(CustomerDto customerDto);
 
     /**
      * Fetches Accounts Details
      *
-     * @param mobileNumber - Input Mobile Number
+     * @param customerId
      * @return Accounts details based on a given mobileNumber
      */
-    List<AccountDto> fetchAccountsDetails(String mobileNumber);
+    List<AccountDto> fetchAccountsDetails(Long customerId);
 
 
     /**

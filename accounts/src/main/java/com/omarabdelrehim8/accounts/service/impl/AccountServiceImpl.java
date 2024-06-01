@@ -2,6 +2,7 @@ package com.omarabdelrehim8.accounts.service.impl;
 
 import com.omarabdelrehim8.accounts.constants.AccountConstants;
 import com.omarabdelrehim8.accounts.dto.AccountDto;
+import com.omarabdelrehim8.accounts.dto.AccountCreationResponseDto;
 import com.omarabdelrehim8.accounts.dto.CustomerDto;
 import com.omarabdelrehim8.accounts.entity.Account;
 import com.omarabdelrehim8.accounts.entity.Customer;
@@ -27,15 +28,16 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
 
-
     @Override
-    public void createAccountForNewCustomer(CustomerDto customerDto) {
+    public AccountCreationResponseDto createAccountForNewCustomer(CustomerDto customerDto) {
 
         Customer newCustomer = CustomerMapper.mapToCustomer(customerDto, new Customer());
 
+
+
         // check if customer is already registered
-        Optional<Customer> customer = customerRepository
-                .findByMobileNumberOrEmail(newCustomer.getMobileNumber(), newCustomer.getEmail());
+        Optional<Customer> customer = customerRepository.findByMobileNumberOrEmail(newCustomer.getMobileNumber(), newCustomer.getEmail());
+
         if (customer.isPresent()) {
             // check if both mobile number and email are duplicates
             if ((customer.get().getMobileNumber().equals(newCustomer.getMobileNumber())) && (customer.get().getEmail().equals(newCustomer.getEmail()))) {
@@ -63,11 +65,18 @@ public class AccountServiceImpl implements AccountService {
         // set new account inside new customer
         newCustomer.setAccounts(List.of(newAccount));
 
-        customerRepository.save(newCustomer);
+        // save customer and through @OneToMany many relationship also save the account
+        Customer savedCustomer = customerRepository.saveAndFlush(newCustomer);
+
+        return AccountCreationResponseDto.builder()
+                .customerId(savedCustomer.getId())
+                .accountNumber(newAccount.getAccountNumber())
+                .accountType(newAccount.getAccountType())
+                .branchAddress(newAccount.getBranchAddress()).build();
     }
 
     @Override
-    public void addAccountForExistingCustomer(CustomerDto customerDto) {
+    public AccountCreationResponseDto addAccountForExistingCustomer(CustomerDto customerDto) {
 
         Customer customer = CustomerMapper.mapToCustomer(customerDto, new Customer());
 
@@ -77,6 +86,12 @@ public class AccountServiceImpl implements AccountService {
         Account newAccount = createAccountInstance();
         newAccount.setCustomer(existingCustomer);
         accountRepository.save(newAccount);
+
+        return AccountCreationResponseDto.builder()
+                .customerId(existingCustomer.getId())
+                .accountNumber(newAccount.getAccountNumber())
+                .accountType(newAccount.getAccountType())
+                .branchAddress(newAccount.getBranchAddress()).build();
     }
 
     private Account createAccountInstance() {
@@ -92,15 +107,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountDto> fetchAccountsDetails(String mobileNumber) {
+    public List<AccountDto> fetchAccountsDetails(Long customerId) {
 
         List<AccountDto> accountsDtoList = new ArrayList<>();
 
         // get all accounts related to a customer given their mobileNumber
-        Optional<List<Account>> accounts = accountRepository.findAccountsByMobileNumber(mobileNumber);
+        Optional<List<Account>> accounts = accountRepository.findByCustomerId(customerId);
 
         if (accounts.isEmpty() || accounts.get().isEmpty()) {
-            throw new ResourceNotFoundException("Customer", "mobile number");
+            throw new ResourceNotFoundException("Customer", "customer id");
         }
 
         // Dto mapping
@@ -119,7 +134,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "account number"));
 
-        Long customerId = account.getCustomer().getCustomerId();
+        Long customerId = account.getCustomer().getId();
 
         // if customer still have more than one account, only delete the account
         if (accountRepository.countAccountsByCustomerId(customerId) > 1) {

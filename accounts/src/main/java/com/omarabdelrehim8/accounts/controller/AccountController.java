@@ -6,10 +6,11 @@ import com.omarabdelrehim8.accounts.dto.constraints.CustomerValidation;
 import com.omarabdelrehim8.accounts.dto.constraints.CustomerView;
 import com.omarabdelrehim8.accounts.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -34,55 +35,56 @@ public class AccountController {
     @Value("${build.version}")
     private String buildVersion;
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
-    @Autowired
-    private AccountsContactInfoDto accountsContactInfoDto;
+    private final ServiceContactInfoDto serviceContactInfoDto;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDto> createAccountForNewCustomer (@Validated(CustomerValidation.OnCreate.class)
-                                                                    @RequestBody
-                                                                    @JsonView(CustomerView.OnCreate.class)
-                                                                    CustomerDto customerDto) {
+    public ResponseEntity<AccountCreationResponseDto> createAccountForNewCustomer (@Validated(CustomerValidation.OnCreate.class)
+                                                                                   @RequestBody
+                                                                                   @JsonView(CustomerView.OnCreate.class)
+                                                                                   CustomerDto customerDto) {
 
-        accountService.createAccountForNewCustomer(customerDto);
+        AccountCreationResponseDto response = accountService.createAccountForNewCustomer(customerDto);
+        response.setStatusCode(HttpStatus.CREATED.value());
+        response.setStatusMessage(MESSAGE_201);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ResponseDto(HttpStatus.CREATED.value(), MESSAGE_201));
+                .body(response);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ResponseDto> addAccountForExistingCustomer (@Validated(CustomerValidation.OnCreate.class)
-                                                                      @RequestBody
-                                                                      @JsonView(CustomerView.OnCreate.class)
-                                                                      CustomerDto customerDto) {
+    public ResponseEntity<AccountCreationResponseDto> addAccountForExistingCustomer (@Validated(CustomerValidation.OnCreate.class)
+                                                                                     @RequestBody
+                                                                                     @JsonView(CustomerView.OnCreate.class)
+                                                                                     CustomerDto customerDto) {
 
-        accountService.addAccountForExistingCustomer(customerDto);
+        AccountCreationResponseDto response = accountService.addAccountForExistingCustomer(customerDto);
+        response.setStatusCode(HttpStatus.CREATED.value());
+        response.setStatusMessage(MESSAGE_201);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ResponseDto(HttpStatus.CREATED.value(), MESSAGE_201));
+                .body(response);
     }
 
     @GetMapping("/fetch-details")
-    public ResponseEntity<List<AccountDto>> fetchAccountsDetails (
-            @RequestParam
-            @NotBlank(message = "Mobile number is required")
-            @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits")
-            String mobileNumber) {
+    public ResponseEntity<List<AccountDto>> fetchAccountsDetails (@Min(value = 1, message = "Customer ID must be bigger than 0")
+                                                                  @RequestParam Long customerId) {
 
-        List<AccountDto> accountsDtoList = accountService.fetchAccountsDetails(mobileNumber);
+        List<AccountDto> accountsDtoList = accountService.fetchAccountsDetails(customerId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(accountsDtoList);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteAccount (HttpServletRequest request, @RequestParam Long accountNumber) {
-        boolean isDeleted = accountService.deleteAccount(accountNumber);
+    @DeleteMapping("/{accountNumber}/delete")
+    public ResponseEntity<?> deleteAccount (HttpServletRequest request, @Pattern(regexp="(^$|[0-9]{10})",message = "AccountNumber must be 10 digits")
+                                                                        @PathVariable String accountNumber) {
+
+        boolean isDeleted = accountService.deleteAccount(Long.parseLong(accountNumber));
 
         if (isDeleted) {
             return ResponseEntity
@@ -149,10 +151,10 @@ public class AccountController {
     }
 
     @GetMapping("/contact-info")
-    public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+    public ResponseEntity<ServiceContactInfoDto> getContactInfo() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(accountsContactInfoDto);
+                .body(serviceContactInfoDto);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.omarabdelrehim8.accounts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.omarabdelrehim8.accounts.dto.AccountCreationResponseDto;
 import com.omarabdelrehim8.accounts.dto.AccountDto;
 import com.omarabdelrehim8.accounts.dto.CustomerDto;
 import com.omarabdelrehim8.accounts.service.AccountService;
@@ -39,6 +40,7 @@ public class AccountControllerTest {
 
     CustomerDto customerDto;
     AccountDto accountDto;
+    AccountCreationResponseDto creationResponse;
 
     @BeforeEach
     void init() {
@@ -55,6 +57,11 @@ public class AccountControllerTest {
 
     @Test
     void Should_Succeed_Creating_Account_When_Input_Is_Valid() throws Exception {
+        when(accountService.createAccountForNewCustomer(any(CustomerDto.class))).thenReturn(AccountCreationResponseDto.builder()
+                                                                                            .customerId(1L)
+                                                                                            .accountNumber(1654798325L)
+                                                                                            .accountType("Savings")
+                                                                                            .branchAddress("123 Main Street, New York").build());
 
         ResultActions response = mockMvc.perform(post("/api/accounts/create")
                                         .contentType(MediaType.APPLICATION_JSON)
@@ -62,12 +69,11 @@ public class AccountControllerTest {
                                         .andExpect(handler().handlerType(AccountController.class))
                                         .andExpect(handler().methodName("createAccountForNewCustomer"));
 
-        verify(accountService, times(1)).createAccountForNewCustomer(any(CustomerDto.class));
-
         response.andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.statusCode").value(201))
-                .andExpect(jsonPath("$.statusMessage").value("Account created successfully"));
+                .andExpect(jsonPath("$.statusMessage").value("Account created successfully"))
+                .andExpect(jsonPath("$.accountNumber").value(1654798325L));
     }
 
     @Test
@@ -93,18 +99,23 @@ public class AccountControllerTest {
 
     @Test
     void Should_Succeed_Adding_Account_When_Input_Is_Valid() throws Exception {
+        when(accountService.addAccountForExistingCustomer(any(CustomerDto.class))).thenReturn(AccountCreationResponseDto.builder()
+                                                                                              .customerId(1L)
+                                                                                              .accountNumber(1654798325L)
+                                                                                              .accountType("Savings")
+                                                                                              .branchAddress("123 Main Street, New York").build());
+
         ResultActions response = mockMvc.perform(post("/api/accounts/add")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(customerDto)))
                                         .andExpect(handler().handlerType(AccountController.class))
                                         .andExpect(handler().methodName("addAccountForExistingCustomer"));
 
-        verify(accountService, times(1)).addAccountForExistingCustomer(any(CustomerDto.class));
-
         response.andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.statusCode").value(201))
-                .andExpect(jsonPath("$.statusMessage").value("Account created successfully"));
+                .andExpect(jsonPath("$.statusMessage").value("Account created successfully"))
+                .andExpect(jsonPath("$.accountNumber").value(1654798325L));
     }
 
     @Test
@@ -132,11 +143,11 @@ public class AccountControllerTest {
     void Should_Succeed_Fetching_Account_Details_When_Input_Is_Valid() throws Exception {
         List<AccountDto> accountDtoList = List.of(accountDto);
 
-        when(accountService.fetchAccountsDetails(eq("1234567891"))).thenReturn(accountDtoList);
+        when(accountService.fetchAccountsDetails(eq(1L))).thenReturn(accountDtoList);
 
         ResultActions response = mockMvc.perform(get("/api/accounts/fetch-details")
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .param("mobileNumber", "1234567891"))
+                                        .param("customerId", "1"))
                                         .andExpect(handler().handlerType(AccountController.class))
                                         .andExpect(handler().methodName("fetchAccountsDetails"));
 
@@ -147,9 +158,9 @@ public class AccountControllerTest {
 
     @Test
     void Should_Fail_Fetching_Account_Details_When_Input_Is_Not_Valid() throws Exception {
-        ResultActions response = mockMvc.perform(get("/api/accounts/fetch-details")
+        ResultActions response = mockMvc.perform(get("/api/accounts/fetch-details", 0)
                                         .contentType(MediaType.APPLICATION_JSON)
-                                        .param("mobileNumber", "123456789"))
+                                        .param("customerId", "0"))
                                         .andExpect(handler().handlerType(AccountController.class))
                                         .andExpect(handler().methodName("fetchAccountsDetails"));
 
@@ -157,16 +168,15 @@ public class AccountControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errorCode").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.errorMessage")
-                        .value("[mobileNumber: Mobile number must be 10 digits]"));
+                        .value("[customerId: Customer ID must be bigger than 0]"));
     }
 
     @Test
     void Should_Succeed_Deleting_Account() throws Exception {
         when(accountService.deleteAccount(eq(1345687538L))).thenReturn(true);
 
-        ResultActions response = mockMvc.perform(delete("/api/accounts/delete")
-                                        .contentType(MediaType.APPLICATION_JSON)
-                                        .param("accountNumber", "1345687538"))
+        ResultActions response = mockMvc.perform(delete("/api/accounts/{accountNumber}/delete", 1345687538)
+                                        .contentType(MediaType.APPLICATION_JSON))
                                         .andExpect(handler().handlerType(AccountController.class))
                                         .andExpect(handler().methodName("deleteAccount"));
 
@@ -180,15 +190,14 @@ public class AccountControllerTest {
     void Should_Fail_Deleting_Account_When_Account_Service_Fails() throws Exception {
         when(accountService.deleteAccount(anyLong())).thenReturn(false);
 
-        ResultActions response = mockMvc.perform(delete("/api/accounts/delete")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("accountNumber", "1345687538"))
+        ResultActions response = mockMvc.perform(delete("/api/accounts/{accountNumber}/delete", 1345687538)
+                        .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(handler().handlerType(AccountController.class))
                         .andExpect(handler().methodName("deleteAccount"));
 
         response.andExpect(status().isExpectationFailed())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.apiPath").value("/api/accounts/delete"))
+                .andExpect(jsonPath("$.apiPath").value("/api/accounts/1345687538/delete"))
                 .andExpect(jsonPath("$.errorCode").value("EXPECTATION_FAILED"))
                 .andExpect(jsonPath("$.errorMessage").value("Delete operation failed. Please try again or contact our customer service"));
     }

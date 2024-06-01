@@ -12,11 +12,10 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    @Query("SELECT a FROM Account a JOIN a.customer c WHERE a.customer.mobileNumber = :mobileNumber")
-    Optional<List<Account>> findAccountsByMobileNumber(@Param("mobileNumber") String mobileNumber);
+    Optional<List<Account>> findByCustomerId(Long customerId);
 
     Optional<Account> findByAccountNumber(Long accountNumber);
 
-    @Query("SELECT COUNT(a) FROM Account a JOIN a.customer c WHERE a.customer.customerId = :customerId")
+    @Query("SELECT COUNT(a) FROM Account a JOIN a.customer c WHERE a.customer.id = :customerId")
     int countAccountsByCustomerId(@Param("customerId") Long customerId);
 }

@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS accountsdb;
 USE accountsdb;
 
 CREATE TABLE IF NOT EXISTS customer (
-  customer_id int AUTO_INCREMENT  PRIMARY KEY,
+  id int AUTO_INCREMENT  PRIMARY KEY,
   name varchar(100) NOT NULL,
   email varchar(100) NOT NULL UNIQUE,
   mobile_number varchar(20) NOT NULL UNIQUE,
@@ -14,12 +14,12 @@ CREATE TABLE IF NOT EXISTS customer (
 
 CREATE TABLE IF NOT EXISTS account (
   customer_id int NOT NULL,
-  account_number int AUTO_INCREMENT  PRIMARY KEY,
-  account_type varchar(100) NOT NULL,
-  branch_address varchar(200) NOT NULL,
+  account_number int PRIMARY KEY,
+  account_type varchar(20) NOT NULL,
+  branch_address varchar(100) NOT NULL,
   created_at date NOT NULL,
   created_by varchar(20) NOT NULL,
   updated_at date DEFAULT NULL,
   updated_by varchar(20) DEFAULT NULL,
-  CONSTRAINT FK_CUSTOMER FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
+  CONSTRAINT FK_CUSTOMER FOREIGN KEY (customer_id) REFERENCES customer(id)
 );

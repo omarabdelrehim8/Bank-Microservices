@@ -13,7 +13,7 @@ public class Customer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NonNull
-    private Long customerId;
+    private Long id;
 
     @NonNull
     private String name;

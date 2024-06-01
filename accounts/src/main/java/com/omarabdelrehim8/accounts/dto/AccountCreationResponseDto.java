@@ -1,10 +1,17 @@
 package com.omarabdelrehim8.accounts.dto;
 
-import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class AccountDto {
+@Builder
+public class AccountCreationResponseDto {
+
+    private int statusCode;
+
+    private String statusMessage;
+
+    private Long customerId;
 
     private Long accountNumber;
 

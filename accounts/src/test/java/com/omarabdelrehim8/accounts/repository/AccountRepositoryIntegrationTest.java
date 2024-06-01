@@ -74,7 +74,7 @@ public class AccountRepositoryIntegrationTest {
 
     @Test
     void Should_Return_All_Accounts_Of_A_Customer() {
-        List<Account> accountsList = accountRepository.findAccountsByMobileNumber("0123456781").get();
+        List<Account> accountsList = accountRepository.findByCustomerId(1L).get();
 
         assertThat(accountsList).size().isEqualTo(3);
         assertThat(accountsList).extracting(Account::getAccountNumber).isEqualTo(List.of(1234567891L, 1234567892L, 1234567893L));

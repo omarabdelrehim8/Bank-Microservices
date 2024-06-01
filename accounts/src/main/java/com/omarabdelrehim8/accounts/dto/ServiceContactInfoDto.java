@@ -8,7 +8,7 @@ import java.util.Map;
 
 @ConfigurationProperties(prefix = "accounts")
 @Getter @Setter
-public class AccountsContactInfoDto {
+public class ServiceContactInfoDto {
 
     private String message;
     private Map<String, String> contactDetails;
