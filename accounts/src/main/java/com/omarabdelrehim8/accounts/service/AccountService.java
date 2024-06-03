@@ -1,7 +1,8 @@
 package com.omarabdelrehim8.accounts.service;
 
-import com.omarabdelrehim8.accounts.dto.AccountDto;
 import com.omarabdelrehim8.accounts.dto.AccountCreationResponseDto;
+import com.omarabdelrehim8.accounts.dto.AccountDto;
+import com.omarabdelrehim8.accounts.dto.CustomerDetailsDto;
 import com.omarabdelrehim8.accounts.dto.CustomerDto;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public interface AccountService {
      * @param mobileNumber - Input Mobile Number
      * @return Customer Details based on a given mobileNumber
      */
-    CustomerDto fetchCustomerDetails(String mobileNumber);
+    CustomerDetailsDto fetchCustomerDetails(String mobileNumber);
 
     /**
      * Updates Customer Details

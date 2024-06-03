@@ -1,9 +1,7 @@
 package com.omarabdelrehim8.accounts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.omarabdelrehim8.accounts.dto.AccountCreationResponseDto;
-import com.omarabdelrehim8.accounts.dto.AccountDto;
-import com.omarabdelrehim8.accounts.dto.CustomerDto;
+import com.omarabdelrehim8.accounts.dto.*;
 import com.omarabdelrehim8.accounts.service.AccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -18,6 +16,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -41,6 +41,7 @@ public class AccountControllerTest {
     CustomerDto customerDto;
     AccountDto accountDto;
     AccountCreationResponseDto creationResponse;
+    CustomerDetailsDto customerDetailsDto;
 
     @BeforeEach
     void init() {
@@ -205,7 +206,28 @@ public class AccountControllerTest {
     @Test
     void Should_Succeed_Fetching_Customer_Details_When_Input_Data_Is_Valid() throws Exception {
         customerDto.setCustomerId(1L);
-        when(accountService.fetchCustomerDetails(eq("1234567891"))).thenReturn(customerDto);
+        customerDetailsDto = new CustomerDetailsDto();
+        customerDetailsDto.setCustomerId(customerDto.getCustomerId());
+        customerDetailsDto.setName(customerDto.getName());
+        customerDetailsDto.setEmail(customerDto.getEmail());
+        customerDetailsDto.setMobileNumber(customerDto.getMobileNumber());
+
+        List<AccountDto> accountsList = new ArrayList<>();
+        accountsList.add(accountDto);
+
+        List<CardDto> cardsList = new ArrayList<>();
+        cardsList.add(CardDto.builder()
+                .cardNumber("102345678212")
+                .accountNumber(1023546878L)
+                .cardType("Debit Card")
+                .monthlyPurchaseLimit(5000)
+                .amountUsed(BigDecimal.valueOf(0))
+                .currentAvailableAmount(BigDecimal.valueOf(5000)).build());
+
+        customerDetailsDto.setAccounts(accountsList);
+        customerDetailsDto.setCards(cardsList);
+
+        when(accountService.fetchCustomerDetails(eq("1234567891"))).thenReturn(customerDetailsDto);
 
         ResultActions response = mockMvc.perform(get("/api/accounts/customer/fetch-details")
                                         .contentType(MediaType.APPLICATION_JSON)
@@ -215,7 +237,9 @@ public class AccountControllerTest {
 
         response.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.customerId").value(1L));
+                .andExpect(jsonPath("$.customerId").value(1L))
+                .andExpect(jsonPath("$.accounts[0].accountNumber").value(1654798325L))
+                .andExpect(jsonPath("$.cards[0].cardNumber").value("102345678212"));
     }
 
     @Test

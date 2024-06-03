@@ -1,7 +1,7 @@
-package com.omarabdelrehim8.cards.config;
+package com.omarabdelrehim8.accounts.config;
 
-import com.omarabdelrehim8.cards.exception.CustomResourceNotFoundException;
-import com.omarabdelrehim8.cards.exception.ServerErrorException;
+import com.omarabdelrehim8.accounts.exception.ResourceNotFoundException;
+import com.omarabdelrehim8.accounts.exception.ServerErrorException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 
@@ -13,7 +13,7 @@ public class CustomErrorDecoder implements ErrorDecoder {
     public Exception decode(String methodkey, Response response) {
 
         return switch (response.status()) {
-            case 404 -> new CustomResourceNotFoundException("Customer", "customer id");
+            case 404 -> new ResourceNotFoundException("Card", "customer's mobile number. Please create a card first.");
             case 500 -> new ServerErrorException("Something went wrong. Please try again later.");
             default -> defaultErrorDecoder.decode(methodkey, response);
         };

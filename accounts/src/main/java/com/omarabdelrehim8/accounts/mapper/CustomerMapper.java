@@ -1,5 +1,6 @@
 package com.omarabdelrehim8.accounts.mapper;
 
+import com.omarabdelrehim8.accounts.dto.CustomerDetailsDto;
 import com.omarabdelrehim8.accounts.dto.CustomerDto;
 import com.omarabdelrehim8.accounts.entity.Customer;
 
@@ -13,6 +14,16 @@ public class CustomerMapper {
         customerDto.setMobileNumber(customer.getMobileNumber());
 
         return customerDto;
+    }
+
+    public static CustomerDetailsDto mapToCustomerDetailsDto(Customer customer, CustomerDetailsDto customerDetailsDto) {
+
+        customerDetailsDto.setCustomerId((customer.getId()));
+        customerDetailsDto.setName(customer.getName());
+        customerDetailsDto.setEmail(customer.getEmail());
+        customerDetailsDto.setMobileNumber(customer.getMobileNumber());
+
+        return customerDetailsDto;
     }
 
     public static Customer mapToCustomer(CustomerDto customerDto, Customer customer) {

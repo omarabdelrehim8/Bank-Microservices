@@ -47,9 +47,9 @@ public class CardControllerTest {
     @BeforeEach
     void init() {
         card = new Card(1L,
+                "102345678911",
                 16L,
                 1023456871L,
-                "102345678911",
                 "Debit Card",
                 5000,
                 BigDecimal.valueOf(0),

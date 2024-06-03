@@ -137,11 +137,11 @@ paths:
       description: REST API to fetch all the accounts associated to a customer.
       operationId: fetchAccountsDetails
       parameters:
-        - name: mobileNumber
+        - name: customerId
           in: query
           required: true
           schema:
-            pattern: (^$|[0-9]{10})
+            minimum: 1
             type: string
       responses:
         '200':
@@ -190,7 +190,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Customer'
+                $ref: '#/components/schemas/Customer_Details_Response'
         '400':
           description: HTTP Status BAD REQUEST
           content:
@@ -209,7 +209,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/delete:
+  /api/accounts/{accountNumber}/delete:
     delete:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -221,11 +221,11 @@ paths:
       operationId: deleteAccount
       parameters:
         - name: accountNumber
-          in: query
+          in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            pattern: (^$|[0-9]{10})
+            type: string
       responses:
         '200':
           description: HTTP Status OK
@@ -322,6 +322,66 @@ components:
           description: Bank's Branch Address
           example: 123 Main Street, New York
       description: Schema to hold Account Information
+    Account_Creation_Response:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: Status Code in the response
+          format: int32
+        statusMessage:
+          type: string
+          description: Status Message in the response
+        customerId:
+          minimum: 1
+          type: integer
+          description: Customer's Id
+          format: int64
+        accountNumber:
+          type: integer
+          description: Account Number of an Account
+          format: int64
+          example: 1034562573
+        accountType:
+          type: string
+          description: Account Type of an Account
+          example: Savings
+        branchAddress:
+          type: string
+          description: Bank's Branch Address
+          example: 123 Main Street, New York
+      description: Schema to hold account creation information
+    Customer_Details_Response:
+      type: object
+      properties:
+        customerId:
+          type: integer
+          description: Customer's Id
+          format: int64
+          example: 1
+        name:
+          type: string
+          description: Name of the customer
+          example: John Doe
+        email:
+          type: string
+          description: Email of the customer
+          example: johndoe@gmail.com
+        mobileNumber:
+          type: string
+          description: Mobile Number of the customer
+          example: '3697746682'
+        accounts:
+          schema:
+            type: array
+          items:
+            $ref: '#/components/schemas/Account'
+        cards:
+          schema:
+            type: array
+          items:
+            $ref: '#/components/schemas/Card'
+      description: Schema to hold customer details
     Customer:
       required:
         - customerId
@@ -335,6 +395,7 @@ components:
           type: integer
           description: Customer's Id
           format: int64
+          example: 1
         name:
           maxLength: 40
           minLength: 5
@@ -396,6 +457,28 @@ components:
           description: Mobile Number of the customer
           example: '3697746682'
       description: Schema to hold Customer Information
+    Card:
+      type: object
+      properties:
+        cardNumber:
+          type: string
+          description: Card Number
+          example: 106542387848
+        cardType:
+          type: string
+          description: Name of the customer
+          example: Debit Card
+        monthlyPurchaseLimit:
+          type: integer
+          description: Card's monthly purchase limit
+          format: int32
+        amountUsed:
+          type: number
+          description: Card's used amount from the monthly purchase limit
+        currentAvailableAmount:
+          type: number
+          description: Card's available balance
+      description: Schema to hold Card Information
     Error_Response:
       type: object
       properties:

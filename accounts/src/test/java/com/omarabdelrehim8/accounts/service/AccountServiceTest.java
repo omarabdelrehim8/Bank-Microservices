@@ -1,6 +1,8 @@
 package com.omarabdelrehim8.accounts.service;
 
 import com.omarabdelrehim8.accounts.dto.AccountCreationResponseDto;
+import com.omarabdelrehim8.accounts.dto.CardDto;
+import com.omarabdelrehim8.accounts.dto.CustomerDetailsDto;
 import com.omarabdelrehim8.accounts.dto.CustomerDto;
 import com.omarabdelrehim8.accounts.entity.Account;
 import com.omarabdelrehim8.accounts.entity.Customer;
@@ -8,6 +10,7 @@ import com.omarabdelrehim8.accounts.exception.CustomerAlreadyExistsException;
 import com.omarabdelrehim8.accounts.exception.ResourceNotFoundException;
 import com.omarabdelrehim8.accounts.repository.AccountRepository;
 import com.omarabdelrehim8.accounts.repository.CustomerRepository;
+import com.omarabdelrehim8.accounts.service.client.CardsFeignClient;
 import com.omarabdelrehim8.accounts.service.impl.AccountServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -17,9 +20,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +44,9 @@ public class AccountServiceTest {
 
     @Mock
     private CustomerRepository customerRepository;
+
+    @Mock
+    private CardsFeignClient cardsFeignClient;
 
     @InjectMocks
     private AccountServiceImpl accountService;
@@ -202,13 +211,37 @@ public class AccountServiceTest {
 
     @Test
     void Should_Return_Customer_Details() {
+        Account account = new Account(customer, 1023546878L, "Savings", "123 Main Street, New York");
+
+        List<Account> accountsList = new ArrayList<>();
+        accountsList.add(account);
+
+        List<CardDto> cardsList = new ArrayList<>();
+        cardsList.add(CardDto.builder()
+                             .cardNumber("102345678212")
+                             .accountNumber(1023546878L)
+                             .cardType("Debit Card")
+                             .monthlyPurchaseLimit(5000)
+                             .amountUsed(BigDecimal.valueOf(0))
+                             .currentAvailableAmount(BigDecimal.valueOf(5000)).build());
+
         when(customerRepository.findByMobileNumber(customer.getMobileNumber()))
                 .thenReturn(Optional.ofNullable(customer));
 
-        assertThat(accountService.fetchCustomerDetails(customer.getMobileNumber()))
-                .isInstanceOf(CustomerDto.class)
-                .extracting("mobileNumber")
-                .isEqualTo("1234567891");
+        when(accountRepository.findByCustomerId(anyLong()))
+                .thenReturn(Optional.of(accountsList));
+
+        when (cardsFeignClient.fetchCardsDetails(anyLong())).thenReturn(ResponseEntity.of(Optional.of(cardsList)));
+
+        CustomerDetailsDto customerDetailsDto = accountService.fetchCustomerDetails(customer.getMobileNumber());
+
+        assertThat(customerDetailsDto).isInstanceOf(CustomerDetailsDto.class)
+                                      .extracting("mobileNumber")
+                                      .isEqualTo("1234567891");
+
+        assertThat(customerDetailsDto.getAccounts().get(0).getAccountNumber()).isEqualTo(1023546878L);
+        assertThat(customerDetailsDto.getCards().get(0).getCardNumber()).isEqualTo("102345678212");
+
     }
 
     @Test

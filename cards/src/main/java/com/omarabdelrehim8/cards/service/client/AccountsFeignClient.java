@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "accounts")
+@FeignClient(name = "accounts")
 public interface AccountsFeignClient {
 
     @GetMapping(value = "/api/accounts/fetch-details", consumes = "application/json")

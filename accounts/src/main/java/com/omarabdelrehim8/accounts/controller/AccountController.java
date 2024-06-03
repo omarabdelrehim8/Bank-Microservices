@@ -8,7 +8,6 @@ import com.omarabdelrehim8.accounts.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -101,17 +100,17 @@ public class AccountController {
     }
 
     @GetMapping("/customer/fetch-details")
-    public ResponseEntity<CustomerDto> fetchCustomerDetails (
+    public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails (
             @RequestParam
             @NotBlank(message = "Mobile number is required")
             @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits")
             String mobileNumber) {
 
-        CustomerDto customerDto = accountService.fetchCustomerDetails(mobileNumber);
+        CustomerDetailsDto customerDetailsDto = accountService.fetchCustomerDetails(mobileNumber);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(customerDto);
+                .body(customerDetailsDto);
     }
 
     @PutMapping("/customer/update-details")

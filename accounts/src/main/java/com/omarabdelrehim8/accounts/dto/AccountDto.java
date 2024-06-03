@@ -1,6 +1,5 @@
 package com.omarabdelrehim8.accounts.dto;
 
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data

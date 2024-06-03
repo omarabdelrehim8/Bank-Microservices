@@ -3,9 +3,9 @@ USE cardsdb;
 
 CREATE TABLE IF NOT EXISTS card (
   card_id int AUTO_INCREMENT PRIMARY KEY,
+  card_number varchar(12) NOT NULL UNIQUE,
   customer_id int NOT NULL,
   account_number int NOT NULL,
-  card_number varchar(12) NOT NULL UNIQUE,
   card_type varchar(20) NOT NULL,
   monthly_purchase_limit int NOT NULL,
   amount_used decimal NOT NULL,

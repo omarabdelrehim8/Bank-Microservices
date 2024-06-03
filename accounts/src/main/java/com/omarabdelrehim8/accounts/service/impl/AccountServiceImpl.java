@@ -1,9 +1,7 @@
 package com.omarabdelrehim8.accounts.service.impl;
 
 import com.omarabdelrehim8.accounts.constants.AccountConstants;
-import com.omarabdelrehim8.accounts.dto.AccountDto;
-import com.omarabdelrehim8.accounts.dto.AccountCreationResponseDto;
-import com.omarabdelrehim8.accounts.dto.CustomerDto;
+import com.omarabdelrehim8.accounts.dto.*;
 import com.omarabdelrehim8.accounts.entity.Account;
 import com.omarabdelrehim8.accounts.entity.Customer;
 import com.omarabdelrehim8.accounts.exception.CustomerAlreadyExistsException;
@@ -13,6 +11,7 @@ import com.omarabdelrehim8.accounts.mapper.CustomerMapper;
 import com.omarabdelrehim8.accounts.repository.AccountRepository;
 import com.omarabdelrehim8.accounts.repository.CustomerRepository;
 import com.omarabdelrehim8.accounts.service.AccountService;
+import com.omarabdelrehim8.accounts.service.client.CardsFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +26,7 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
+    private final CardsFeignClient cardsFeignClient;
 
     @Override
     public AccountCreationResponseDto createAccountForNewCustomer(CustomerDto customerDto) {
@@ -149,12 +149,23 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public CustomerDto fetchCustomerDetails(String mobileNumber) {
+    public CustomerDetailsDto fetchCustomerDetails(String mobileNumber) {
 
         Customer customer = customerRepository.findByMobileNumber(mobileNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer", "mobile number"));
 
-        return CustomerMapper.mapToCustomerDto(customer, new CustomerDto());
+        List<Account> accountsList = accountRepository.findByCustomerId(customer.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Accounts", "customer id"));
+
+        List<CardDto> cardsList = cardsFeignClient.fetchCardsDetails(customer.getId()).getBody();
+
+        CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(customer, new CustomerDetailsDto());
+        customerDetailsDto.setAccounts(accountsList.stream()
+                                                    .map(account -> AccountMapper.mapToAccountDto(account, new AccountDto()))
+                                                    .toList());
+        customerDetailsDto.setCards(cardsList);
+
+        return customerDetailsDto;
     }
 
     @Override

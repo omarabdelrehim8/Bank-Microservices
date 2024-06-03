@@ -35,7 +35,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled("Needs feign client mocking")
+@Disabled("Needs feign client mock")
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -71,9 +71,9 @@ public class CardControllerIntegrationTest {
     @BeforeEach
     void init() {
         card = new Card(1L,
+                "102345678911",
                 16L,
                 1023456871L,
-                "102345678911",
                 "Debit Card",
                 5000,
                 BigDecimal.valueOf(0),

@@ -13,7 +13,7 @@ tags:
   - name: CRUD REST APIs For Cards Microservice
     description: REST APIs to create, update, fetch and delete cards details
 paths:
-  /api/cards/update/{cardNumber}:
+  /api/cards/{cardNumber}/update:
     put:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -58,21 +58,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/{customerId}/create/debit-card:
+  /api/cards/create/debit-card:
     post:
       tags:
         - CRUD REST APIs For Cards Microservice
       summary: Create Debit Card
       description: REST API to create a debit card.
       operationId: createDebitCard
-      parameters:
-        - name: customerId
-          in: path
-          required: true
-          schema:
-            minimum: 1
-            type: integer
-            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card_Creation_Request'
       responses:
         '201':
           description: HTTP Status CREATED
@@ -92,21 +89,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/{customerId}/create/credit-card:
+  /api/cards/create/credit-card:
     post:
       tags:
         - CRUD REST APIs For Cards Microservice
       summary: Create Credit Card
       description: REST API to create a credit card.
       operationId: createCreditCard
-      parameters:
-        - name: customerId
-          in: path
-          required: true
-          schema:
-            minimum: 1
-            type: integer
-            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card_Creation_Request'
       responses:
         '201':
           description: HTTP Status CREATED
@@ -126,7 +120,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/{customerId}/fetch:
+  /api/cards/fetch:
     get:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -135,7 +129,7 @@ paths:
       operationId: fetchCardsDetails
       parameters:
         - name: customerId
-          in: path
+          in: query
           required: true
           schema:
             minimum: 1
@@ -162,7 +156,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/{customerId}/delete:
+  /api/cards/delete:
     delete:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -171,7 +165,7 @@ paths:
       operationId: deleteAllCards
       parameters:
         - name: customerId
-          in: path
+          in: query
           required: true
           schema:
             minimum: 1
@@ -202,7 +196,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/delete/{cardNumber}:
+  /api/cards/{cardNumber}/delete:
     delete:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -310,6 +304,7 @@ components:
           pattern: (^$|[0-9]{12})
           type: string
           description: Card Number
+          example: 106542387848
         cardType:
           type: string
           description: Name of the customer
@@ -337,6 +332,21 @@ components:
           description: Card's monthly purchase limit
           format: int32
       description: Schema to hold Card Information
+    Card_Creation_Request:
+      type: object
+      properties:
+        customerId:
+          minimum: 1
+          type: integer
+          description: Customer's Id
+          format: int64
+        accountNumber:
+          pattern: (^$|[0-9]{10})
+          type: integer
+          description: Account Number of an Account
+          format: int64
+          example: 1034562573
+      description: Schema to hold card creation request mandatory data
     Successful_Response:
       type: object
       properties:
@@ -344,6 +354,7 @@ components:
           type: integer
           description: Status Code in the response
           format: int32
+          example: 201
         statusMessage:
           type: string
           description: Status Message in the response

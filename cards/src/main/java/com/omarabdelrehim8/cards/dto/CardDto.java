@@ -15,11 +15,11 @@ public class CardDto {
     @Min(value = 1, message = "Customer ID must be bigger than 0")
     private Long customerId;
 
-    private Long accountNumber;
-
     @NotBlank(message = "Card number is required")
     @Pattern(regexp="(^$|[0-9]{12})",message = "Card number must be 12 digits")
     private String cardNumber;
+
+    private Long accountNumber;
 
     private String cardType;
 

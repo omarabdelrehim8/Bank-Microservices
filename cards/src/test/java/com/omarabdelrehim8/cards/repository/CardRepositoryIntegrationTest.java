@@ -49,9 +49,9 @@ public class CardRepositoryIntegrationTest {
 
     @BeforeTransaction
     void init() {
-        List<Card> cards = List.of(new Card(1L, 16L, 1023456871L, "112345678911", "Debit Card", 5000, BigDecimal.valueOf(0), BigDecimal.valueOf(5000)),
-                new Card(2L, 16L, 1023456871L, "112345678912", "Debit Card", 5000, BigDecimal.valueOf(0), BigDecimal.valueOf(5000)),
-                new Card(3L, 16L, 1023456872L, "112345678913", "Credit Card", 5000, BigDecimal.valueOf(0), BigDecimal.valueOf(5000)));
+        List<Card> cards = List.of(new Card(1L, "112345678911", 16L, 1023456871L, "Debit Card", 5000, BigDecimal.valueOf(0), BigDecimal.valueOf(5000)),
+                new Card(2L, "112345678912", 16L, 1023456871L, "Debit Card", 5000, BigDecimal.valueOf(0), BigDecimal.valueOf(5000)),
+                new Card(3L, "112345678913", 16L, 1023456872L, "Credit Card", 5000, BigDecimal.valueOf(0), BigDecimal.valueOf(5000)));
 
         cardRepository.saveAll(cards);
     }
