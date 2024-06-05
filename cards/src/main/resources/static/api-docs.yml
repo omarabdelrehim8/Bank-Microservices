@@ -13,7 +13,7 @@ tags:
   - name: CRUD REST APIs For Cards Microservice
     description: REST APIs to create, update, fetch and delete cards details
 paths:
-  /api/cards/{cardNumber}/update:
+  /api/{cardNumber}/update:
     put:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -58,7 +58,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/create/debit-card:
+  /api/create/debit-card:
     post:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -89,7 +89,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/create/credit-card:
+  /api/create/credit-card:
     post:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -120,7 +120,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/fetch:
+  /api/fetch:
     get:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -156,7 +156,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/delete:
+  /api/delete:
     delete:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -196,7 +196,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/{cardNumber}/delete:
+  /api/{cardNumber}/delete:
     delete:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -235,7 +235,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/build-version:
+  /api/build-version:
     get:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -251,7 +251,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/java-version:
+  /api/java-version:
     get:
       tags:
         - CRUD REST APIs For Cards Microservice
@@ -267,7 +267,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/cards/contact-info:
+  /api/contact-info:
     get:
       tags:
         - CRUD REST APIs For Cards Microservice

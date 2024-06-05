@@ -96,7 +96,7 @@ public class AccountControllerIntegrationTest {
         customerDto.setEmail("sylvieidrath@gmail.com");
         customerDto.setMobileNumber("1234567892");
 
-        ResponseEntity<AccountCreationResponseDto> response = testRestTemplate.postForEntity("/api/accounts/create", customerDto, AccountCreationResponseDto.class);
+        ResponseEntity<AccountCreationResponseDto> response = testRestTemplate.postForEntity("/api/create", customerDto, AccountCreationResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getStatusCode()).isEqualTo(201);
@@ -106,18 +106,18 @@ public class AccountControllerIntegrationTest {
 
     @Test
     void Should_Fail_Creating_Account() {
-        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/accounts/create", customerDto, ErrorResponseDto.class);
+        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/create", customerDto, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/accounts/create");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/create");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Customer is already registered with the given mobile number and email. " +
                 "Please change them and try again");
     }
 
     @Test
     void Should_Succeed_Adding_Account() {
-        ResponseEntity<AccountCreationResponseDto> response = testRestTemplate.postForEntity("/api/accounts/add", customerDto, AccountCreationResponseDto.class);
+        ResponseEntity<AccountCreationResponseDto> response = testRestTemplate.postForEntity("/api/add", customerDto, AccountCreationResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getStatusCode()).isEqualTo(201);
@@ -131,18 +131,18 @@ public class AccountControllerIntegrationTest {
         customerDto.setName("Arthur Leywin");
         customerDto.setEmail("arthurleywin@gmail.com");
 
-        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/accounts/add", customerDto, ErrorResponseDto.class);
+        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/add", customerDto, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/accounts/add");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/add");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Customer not found with the given name, mobile number and email");
     }
 
     @Test
     void Should_Succeed_Fetching_Account_Details() {
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/accounts/fetch-details")
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/fetch-details")
                 .queryParam("customerId", accountCreationResponseDto.getCustomerId()).build().toUri();
 
         ResponseEntity<List<AccountDto>> response = testRestTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<List<AccountDto>>(){});
@@ -155,14 +155,14 @@ public class AccountControllerIntegrationTest {
     @Test
     void Should_Fail_Fetching_Account_Details() {
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/accounts/fetch-details")
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/fetch-details")
                 .queryParam("customerId", "10").build().toUri();
 
         ResponseEntity<ErrorResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.GET, null, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/accounts/fetch-details");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/fetch-details");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Customer not found with the given customer id");
     }
 
@@ -170,7 +170,7 @@ public class AccountControllerIntegrationTest {
     @Disabled("Needs feign client mock")
     void Should_Succeed_Fetching_Customer_Details() {
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/accounts/customer/fetch-details")
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/customer/fetch-details")
                 .queryParam("mobileNumber", "1234567893").build().toUri();
 
         ResponseEntity<CustomerDetailsDto> response = testRestTemplate.exchange(uri, HttpMethod.GET, null, CustomerDetailsDto.class);
@@ -183,21 +183,21 @@ public class AccountControllerIntegrationTest {
     @Test
     void Should_Fail_Fetching_Customer_Details() {
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/accounts/customer/fetch-details")
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/customer/fetch-details")
                 .queryParam("mobileNumber", "1234567892").build().toUri();
 
         ResponseEntity<ErrorResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.GET, null, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/accounts/customer/fetch-details");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/customer/fetch-details");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Customer not found with the given mobile number");
     }
 
     @Test
     void Should_Succeed_Updating_Customer_Details() {
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/accounts/customer/update-details").build().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/customer/update-details").build().toUri();
 
         customerDto.setCustomerId(customerRepository.findByMobileNumber(customerDto.getMobileNumber()).get().getId());
         customerDto.setMobileNumber("1234567894");
@@ -212,7 +212,7 @@ public class AccountControllerIntegrationTest {
     @Test
     void Should_Fail_Updating_Customer_Details_If_Customer_Does_Not_Exist() {
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/accounts/customer/update-details").build().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/customer/update-details").build().toUri();
 
         customerDto.setCustomerId(2L);
 
@@ -220,7 +220,7 @@ public class AccountControllerIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/accounts/customer/update-details");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/customer/update-details");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Customer not found with the given customer id");
     }
 
@@ -232,7 +232,7 @@ public class AccountControllerIntegrationTest {
         uriVariables.put("accountNumber", accountNumber.toString());
         String url = "http://localhost:" + this.port;
         URI uri = UriComponentsBuilder.fromHttpUrl(url)
-                                      .path("/api/accounts/{accountNumber}/delete")
+                                      .path("/api/{accountNumber}/delete")
                                       .buildAndExpand(uriVariables)
                                       .toUri();
 
@@ -255,7 +255,7 @@ public class AccountControllerIntegrationTest {
         uriVariables.put("accountNumber", accountNumber.toString());
         String url = "http://localhost:" + this.port;
         URI uri = UriComponentsBuilder.fromHttpUrl(url)
-                .path("/api/accounts/{accountNumber}/delete")
+                .path("/api/{accountNumber}/delete")
                 .buildAndExpand(uriVariables)
                 .toUri();
 
@@ -274,7 +274,7 @@ public class AccountControllerIntegrationTest {
         uriVariables.put("accountNumber", "1111111111");
         String url = "http://localhost:" + this.port;
         URI uri = UriComponentsBuilder.fromHttpUrl(url)
-                .path("/api/accounts/{accountNumber}/delete")
+                .path("/api/{accountNumber}/delete")
                 .buildAndExpand(uriVariables)
                 .toUri();
 
@@ -282,7 +282,7 @@ public class AccountControllerIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/accounts/1111111111/delete");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/1111111111/delete");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Account not found with the given account number");
     }
 }

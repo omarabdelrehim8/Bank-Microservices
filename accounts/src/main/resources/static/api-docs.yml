@@ -15,7 +15,7 @@ tags:
       REST APIs to create, update, fetch and delete accounts and customers
       details
 paths:
-  /api/accounts/customer/update-details:
+  /api/customer/update-details:
     put:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -59,7 +59,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/create:
+  /api/create:
     post:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -91,7 +91,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/add:
+  /api/add:
     post:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -129,7 +129,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/fetch-details:
+  /api/fetch-details:
     get:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -170,7 +170,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/customer/fetch-details:
+  /api/customer/fetch-details:
     get:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -209,7 +209,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/{accountNumber}/delete:
+  /api/{accountNumber}/delete:
     delete:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -251,7 +251,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/build-version:
+  /api/build-version:
     get:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -267,7 +267,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/java-version:
+  /api/java-version:
     get:
       tags:
         - CRUD REST APIs For Accounts Microservice
@@ -283,7 +283,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
-  /api/accounts/contact-info:
+  /api/contact-info:
     get:
       tags:
         - CRUD REST APIs For Accounts Microservice

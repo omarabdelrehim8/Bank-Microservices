@@ -24,7 +24,7 @@ import java.util.List;
 import static com.omarabdelrehim8.accounts.constants.AccountConstants.*;
 
 @RestController
-@RequestMapping(value = "/api/accounts", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RequiredArgsConstructor
 @Validated
 public class AccountController {

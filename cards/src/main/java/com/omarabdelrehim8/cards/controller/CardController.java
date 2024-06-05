@@ -27,7 +27,7 @@ import java.util.List;
 import static com.omarabdelrehim8.cards.constants.CardConstants.*;
 
 @RestController
-@RequestMapping(path = "/api/cards", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RequiredArgsConstructor
 @Validated
 public class CardController {

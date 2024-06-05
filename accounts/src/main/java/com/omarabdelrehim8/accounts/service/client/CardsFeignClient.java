@@ -11,6 +11,6 @@ import java.util.List;
 @FeignClient(name = "cards")
 public interface CardsFeignClient {
 
-    @GetMapping(value = "/api/cards/fetch", consumes = "application/json")
+    @GetMapping(value = "/api/fetch", consumes = "application/json")
     ResponseEntity<List<CardDto>> fetchCardsDetails (@RequestParam Long customerId);
 }

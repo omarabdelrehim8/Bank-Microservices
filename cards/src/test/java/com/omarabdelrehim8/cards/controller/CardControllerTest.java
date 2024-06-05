@@ -66,7 +66,7 @@ public class CardControllerTest {
 
         when(cardService.createDebitCard(anyLong(), anyLong())).thenReturn(cardDto);
 
-        ResultActions response = mockMvc.perform(post("/api/cards/create/debit-card")
+        ResultActions response = mockMvc.perform(post("/api/create/debit-card")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(creationRequest)))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -88,7 +88,7 @@ public class CardControllerTest {
                                                 .accountNumber(card.getAccountNumber().toString())
                                                 .build();
 
-        ResultActions response = mockMvc.perform(post("/api/cards/create/debit-card")
+        ResultActions response = mockMvc.perform(post("/api/create/debit-card")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(creationRequest)))
                         .andExpect(handler().handlerType(CardController.class))
@@ -111,7 +111,7 @@ public class CardControllerTest {
 
         when(cardService.createCreditCard(anyLong(), anyLong())).thenReturn(cardDto);
 
-        ResultActions response = mockMvc.perform(post("/api/cards/create/credit-card")
+        ResultActions response = mockMvc.perform(post("/api/create/credit-card")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(creationRequest)))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -133,7 +133,7 @@ public class CardControllerTest {
                                                 .accountNumber(card.getAccountNumber().toString())
                                                 .build();
 
-        ResultActions response = mockMvc.perform(post("/api/cards/create/credit-card")
+        ResultActions response = mockMvc.perform(post("/api/create/credit-card")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(creationRequest)))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -152,7 +152,7 @@ public class CardControllerTest {
 
         when(cardService.fetchCards(eq(16L))).thenReturn(cardsList);
 
-        ResultActions response = mockMvc.perform(get("/api/cards/fetch")
+        ResultActions response = mockMvc.perform(get("/api/fetch")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("customerId", "16"))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -169,7 +169,7 @@ public class CardControllerTest {
 
     @Test
     void Should_Fail_Fetching_All_Cards_When_Input_Is_Not_Valid() throws Exception {
-        ResultActions response = mockMvc.perform(get("/api/cards/fetch")
+        ResultActions response = mockMvc.perform(get("/api/fetch")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("customerId", "0"))
                         .andExpect(handler().handlerType(CardController.class))
@@ -187,7 +187,7 @@ public class CardControllerTest {
         CardDto cardDto = CardMapper.mapToCardDto(card, new CardDto());
         when(cardService.updateCardMonthlyPurchaseLimit(anyString(), anyInt())).thenReturn(true);
 
-        ResultActions response = mockMvc.perform(put("/api/cards/{cardNumber}/update", cardDto.getCardNumber())
+        ResultActions response = mockMvc.perform(put("/api/{cardNumber}/update", cardDto.getCardNumber())
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(cardDto)))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -207,7 +207,7 @@ public class CardControllerTest {
         cardDto.setMonthlyPurchaseLimit(1000);
         when(cardService.updateCardMonthlyPurchaseLimit(anyString(), anyInt())).thenReturn(true);
 
-        ResultActions response = mockMvc.perform(put("/api/cards/{cardNumber}/update", cardDto.getCardNumber())
+        ResultActions response = mockMvc.perform(put("/api/{cardNumber}/update", cardDto.getCardNumber())
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(cardDto)))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -225,7 +225,7 @@ public class CardControllerTest {
         CardDto cardDto = CardMapper.mapToCardDto(card, new CardDto());
         when(cardService.updateCardMonthlyPurchaseLimit(anyString(), anyInt())).thenReturn(false);
 
-        ResultActions response = mockMvc.perform(put("/api/cards/{cardNumber}/update", cardDto.getCardNumber())
+        ResultActions response = mockMvc.perform(put("/api/{cardNumber}/update", cardDto.getCardNumber())
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(cardDto)))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -242,7 +242,7 @@ public class CardControllerTest {
     void Should_Succeed_Deleting_Card_When_Input_Data_Is_Valid() throws Exception {
         when(cardService.deleteCard(anyString())).thenReturn(true);
 
-        ResultActions response = mockMvc.perform(delete("/api/cards/{cardNumber}/delete", card.getCardNumber())
+        ResultActions response = mockMvc.perform(delete("/api/{cardNumber}/delete", card.getCardNumber())
                                         .contentType(MediaType.APPLICATION_JSON))
                                         .andExpect(handler().handlerType(CardController.class))
                                         .andExpect(handler().methodName("deleteCard"));
@@ -257,7 +257,7 @@ public class CardControllerTest {
 
     @Test
     void Should_Fail_Deleting_Card_When_Input_Data_Is_Not_Valid() throws Exception {
-        ResultActions response = mockMvc.perform(delete("/api/cards/{cardNumber}/delete", 0)
+        ResultActions response = mockMvc.perform(delete("/api/{cardNumber}/delete", 0)
                                         .contentType(MediaType.APPLICATION_JSON))
                                         .andExpect(handler().handlerType(CardController.class))
                                         .andExpect(handler().methodName("deleteCard"));
@@ -273,7 +273,7 @@ public class CardControllerTest {
     void Should_Fail_Deleting_Card_When_Card_Service_Fails() throws Exception {
         when(cardService.deleteCard(anyString())).thenReturn(false);
 
-        ResultActions response = mockMvc.perform(delete("/api/cards/{cardNumber}/delete", card.getCardNumber())
+        ResultActions response = mockMvc.perform(delete("/api/{cardNumber}/delete", card.getCardNumber())
                                         .contentType(MediaType.APPLICATION_JSON))
                                         .andExpect(handler().handlerType(CardController.class))
                                         .andExpect(handler().methodName("deleteCard"));
@@ -289,7 +289,7 @@ public class CardControllerTest {
     void Should_Succeed_Deleting_All_Cards_When_Input_Data_Is_Valid() throws Exception {
         when(cardService.deleteAllCards(anyLong())).thenReturn(true);
 
-        ResultActions response = mockMvc.perform(delete("/api/cards/delete")
+        ResultActions response = mockMvc.perform(delete("/api/delete")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("customerId", "16"))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -305,7 +305,7 @@ public class CardControllerTest {
 
     @Test
     void Should_Fail_Deleting_All_Cards_When_Input_Data_Is_Not_Valid() throws Exception {
-        ResultActions response = mockMvc.perform(delete("/api/cards/delete")
+        ResultActions response = mockMvc.perform(delete("/api/delete")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("customerId", "0"))
                                         .andExpect(handler().handlerType(CardController.class))
@@ -322,7 +322,7 @@ public class CardControllerTest {
     void Should_Fail_Deleting_All_Cards_When_Card_Service_Fails() throws Exception {
         when(cardService.deleteAllCards(anyLong())).thenReturn(false);
 
-        ResultActions response = mockMvc.perform(delete("/api/cards/delete")
+        ResultActions response = mockMvc.perform(delete("/api/delete")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("customerId", "16"))
                                         .andExpect(handler().handlerType(CardController.class))

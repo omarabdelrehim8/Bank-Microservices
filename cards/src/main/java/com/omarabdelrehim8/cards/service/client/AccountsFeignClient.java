@@ -11,6 +11,6 @@ import java.util.List;
 @FeignClient(name = "accounts")
 public interface AccountsFeignClient {
 
-    @GetMapping(value = "/api/accounts/fetch-details", consumes = "application/json")
+    @GetMapping(value = "/api/fetch-details", consumes = "application/json")
     ResponseEntity<List<AccountDto>> fetchAccountsDetails(@RequestParam Long customerId);
 }

@@ -64,7 +64,7 @@ public class AccountControllerTest {
                                                                                             .accountType("Savings")
                                                                                             .branchAddress("123 Main Street, New York").build());
 
-        ResultActions response = mockMvc.perform(post("/api/accounts/create")
+        ResultActions response = mockMvc.perform(post("/api/create")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(customerDto)))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -83,7 +83,7 @@ public class AccountControllerTest {
         customerDto.setName(null);
         customerDto.setEmail("regisaethergmail.com");
 
-        ResultActions response = mockMvc.perform(post("/api/accounts/create")
+        ResultActions response = mockMvc.perform(post("/api/create")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(customerDto)))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -106,7 +106,7 @@ public class AccountControllerTest {
                                                                                               .accountType("Savings")
                                                                                               .branchAddress("123 Main Street, New York").build());
 
-        ResultActions response = mockMvc.perform(post("/api/accounts/add")
+        ResultActions response = mockMvc.perform(post("/api/add")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(customerDto)))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -125,7 +125,7 @@ public class AccountControllerTest {
         customerDto.setName("");
         customerDto.setEmail(null);
 
-        ResultActions response = mockMvc.perform(post("/api/accounts/add")
+        ResultActions response = mockMvc.perform(post("/api/add")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(customerDto)))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -146,7 +146,7 @@ public class AccountControllerTest {
 
         when(accountService.fetchAccountsDetails(eq(1L))).thenReturn(accountDtoList);
 
-        ResultActions response = mockMvc.perform(get("/api/accounts/fetch-details")
+        ResultActions response = mockMvc.perform(get("/api/fetch-details")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("customerId", "1"))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -159,7 +159,7 @@ public class AccountControllerTest {
 
     @Test
     void Should_Fail_Fetching_Account_Details_When_Input_Is_Not_Valid() throws Exception {
-        ResultActions response = mockMvc.perform(get("/api/accounts/fetch-details", 0)
+        ResultActions response = mockMvc.perform(get("/api/fetch-details", 0)
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("customerId", "0"))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -176,7 +176,7 @@ public class AccountControllerTest {
     void Should_Succeed_Deleting_Account() throws Exception {
         when(accountService.deleteAccount(eq(1345687538L))).thenReturn(true);
 
-        ResultActions response = mockMvc.perform(delete("/api/accounts/{accountNumber}/delete", 1345687538)
+        ResultActions response = mockMvc.perform(delete("/api/{accountNumber}/delete", 1345687538)
                                         .contentType(MediaType.APPLICATION_JSON))
                                         .andExpect(handler().handlerType(AccountController.class))
                                         .andExpect(handler().methodName("deleteAccount"));
@@ -191,14 +191,14 @@ public class AccountControllerTest {
     void Should_Fail_Deleting_Account_When_Account_Service_Fails() throws Exception {
         when(accountService.deleteAccount(anyLong())).thenReturn(false);
 
-        ResultActions response = mockMvc.perform(delete("/api/accounts/{accountNumber}/delete", 1345687538)
+        ResultActions response = mockMvc.perform(delete("/api/{accountNumber}/delete", 1345687538)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(handler().handlerType(AccountController.class))
                         .andExpect(handler().methodName("deleteAccount"));
 
         response.andExpect(status().isExpectationFailed())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.apiPath").value("/api/accounts/1345687538/delete"))
+                .andExpect(jsonPath("$.apiPath").value("/api/1345687538/delete"))
                 .andExpect(jsonPath("$.errorCode").value("EXPECTATION_FAILED"))
                 .andExpect(jsonPath("$.errorMessage").value("Delete operation failed. Please try again or contact our customer service"));
     }
@@ -229,7 +229,7 @@ public class AccountControllerTest {
 
         when(accountService.fetchCustomerDetails(eq("1234567891"))).thenReturn(customerDetailsDto);
 
-        ResultActions response = mockMvc.perform(get("/api/accounts/customer/fetch-details")
+        ResultActions response = mockMvc.perform(get("/api/customer/fetch-details")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("mobileNumber", "1234567891"))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -244,7 +244,7 @@ public class AccountControllerTest {
 
     @Test
     void Should_Fail_Fetching_Customer_Details_When_Input_Data_Is_Not_Valid() throws Exception {
-        ResultActions response = mockMvc.perform(get("/api/accounts/customer/fetch-details")
+        ResultActions response = mockMvc.perform(get("/api/customer/fetch-details")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .param("mobileNumber", "123456789"))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -262,7 +262,7 @@ public class AccountControllerTest {
         customerDto.setCustomerId(1L);
         when(accountService.updateCustomerDetails(any(CustomerDto.class))).thenReturn(true);
 
-        ResultActions response = mockMvc.perform(put("/api/accounts/customer/update-details")
+        ResultActions response = mockMvc.perform(put("/api/customer/update-details")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(customerDto)))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -280,7 +280,7 @@ public class AccountControllerTest {
         customerDto.setMobileNumber("12345");
         customerDto.setEmail("regisaethergmail.com");
 
-        ResultActions response = mockMvc.perform(put("/api/accounts/customer/update-details")
+        ResultActions response = mockMvc.perform(put("/api/customer/update-details")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(customerDto)))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -299,7 +299,7 @@ public class AccountControllerTest {
         customerDto.setCustomerId(1L);
         when(accountService.updateCustomerDetails(any(CustomerDto.class))).thenReturn(false);
 
-        ResultActions response = mockMvc.perform(put("/api/accounts/customer/update-details")
+        ResultActions response = mockMvc.perform(put("/api/customer/update-details")
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(customerDto)))
                                         .andExpect(handler().handlerType(AccountController.class))
@@ -307,7 +307,7 @@ public class AccountControllerTest {
 
         response.andExpect(status().isExpectationFailed())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.apiPath").value("/api/accounts/customer/update-details"))
+                .andExpect(jsonPath("$.apiPath").value("/api/customer/update-details"))
                 .andExpect(jsonPath("$.errorCode").value("EXPECTATION_FAILED"))
                 .andExpect(jsonPath("$.errorMessage").value("Update operation failed. Please try again or contact our customer service"));
     }

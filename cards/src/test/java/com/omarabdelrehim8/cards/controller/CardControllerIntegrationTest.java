@@ -100,7 +100,7 @@ public class CardControllerIntegrationTest {
                                                 .accountNumber("1076368322")
                                                 .build();
 
-        ResponseEntity<ResponseDto> response = testRestTemplate.postForEntity("/api/cards/create/debit-card", creationRequest, ResponseDto.class);
+        ResponseEntity<ResponseDto> response = testRestTemplate.postForEntity("/api/create/debit-card", creationRequest, ResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getStatusCode()).isEqualTo(201);
@@ -115,13 +115,13 @@ public class CardControllerIntegrationTest {
                                                 .accountNumber("1076368322")
                                                 .build();
 
-        testRestTemplate.postForEntity("/api/cards/create/debit-card", creationRequest, ResponseDto.class);
-        testRestTemplate.postForEntity("/api/cards/create/debit-card", creationRequest, ResponseDto.class);
-        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/cards/create/debit-card", creationRequest, ErrorResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/debit-card", creationRequest, ResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/debit-card", creationRequest, ResponseDto.class);
+        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/create/debit-card", creationRequest, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/cards/create/debit-card");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/create/debit-card");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Creation limit reached. You can only have a maximum of 2 Debit Cards per account.");
     }
 
@@ -132,13 +132,13 @@ public class CardControllerIntegrationTest {
                                                 .accountNumber("1076368310")
                                                 .build();
 
-        testRestTemplate.postForEntity("/api/cards/create/debit-card", creationRequest, ResponseDto.class);
-        testRestTemplate.postForEntity("/api/cards/create/debit-card", creationRequest, ResponseDto.class);
-        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/cards/create/debit-card", creationRequest, ErrorResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/debit-card", creationRequest, ResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/debit-card", creationRequest, ResponseDto.class);
+        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/create/debit-card", creationRequest, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/cards/create/debit-card");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/create/debit-card");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Account number: 1076368310 is not associated to the given customer id. Please give a valid account number and try again.");
     }
 
@@ -149,7 +149,7 @@ public class CardControllerIntegrationTest {
                                                 .accountNumber("1076368322")
                                                 .build();
 
-        ResponseEntity<ResponseDto> response = testRestTemplate.postForEntity("/api/cards/create/credit-card", creationRequest, ResponseDto.class);
+        ResponseEntity<ResponseDto> response = testRestTemplate.postForEntity("/api/create/credit-card", creationRequest, ResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getStatusCode()).isEqualTo(201);
@@ -164,14 +164,14 @@ public class CardControllerIntegrationTest {
                                                 .accountNumber("1076368322")
                                                 .build();
 
-        testRestTemplate.postForEntity("/api/cards/create/credit-card", creationRequest, ResponseDto.class);
-        testRestTemplate.postForEntity("/api/cards/create/credit-card", creationRequest, ResponseDto.class);
-        testRestTemplate.postForEntity("/api/cards/create/credit-card", creationRequest, ResponseDto.class);
-        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/cards/create/credit-card", creationRequest, ErrorResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/credit-card", creationRequest, ResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/credit-card", creationRequest, ResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/credit-card", creationRequest, ResponseDto.class);
+        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/create/credit-card", creationRequest, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/cards/create/credit-card");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/create/credit-card");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Creation limit reached. You can only have a maximum of 3 Credit Cards per account.");
     }
 
@@ -182,20 +182,20 @@ public class CardControllerIntegrationTest {
                                                 .accountNumber("1076368310")
                                                 .build();
 
-        testRestTemplate.postForEntity("/api/cards/create/credit-card", creationRequest, ResponseDto.class);
-        testRestTemplate.postForEntity("/api/cards/create/credit-card", creationRequest, ResponseDto.class);
-        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/cards/create/credit-card", creationRequest, ErrorResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/credit-card", creationRequest, ResponseDto.class);
+        testRestTemplate.postForEntity("/api/create/credit-card", creationRequest, ResponseDto.class);
+        ResponseEntity<ErrorResponseDto> response = testRestTemplate.postForEntity("/api/create/credit-card", creationRequest, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/cards/create/credit-card");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/create/credit-card");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Account number: 1076368310 is not associated to the given customer id. Please give a valid account number and try again.");
     }
 
     @Test
     void Should_Succeed_Fetching_Cards_Details() {
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/cards/fetch").queryParam("customerId", 1).build().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/fetch").queryParam("customerId", 1).build().toUri();
 
         createdCard = cardService.createDebitCard(1L, 1076368322L);
 
@@ -210,13 +210,13 @@ public class CardControllerIntegrationTest {
     @Test
     void Should_Fail_Fetching_Cards_Details() {
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/cards/fetch").queryParam("customerId", 10).build().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/fetch").queryParam("customerId", 10).build().toUri();
 
         ResponseEntity<ErrorResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.GET, null, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/cards/fetch");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/fetch");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Cards not found with the given customer id");
     }
 
@@ -228,7 +228,7 @@ public class CardControllerIntegrationTest {
         Map<String, String> uriVariables = new HashMap<>();
         uriVariables.put("cardNumber", createdCard.getCardNumber());
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/cards/{cardNumber}/update").buildAndExpand(uriVariables).toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/{cardNumber}/update").buildAndExpand(uriVariables).toUri();
 
         createdCard.setMonthlyPurchaseLimit(15000);
 
@@ -250,7 +250,7 @@ public class CardControllerIntegrationTest {
         Map<String, String> uriVariables = new HashMap<>();
         uriVariables.put("cardNumber", createdCard.getCardNumber());
         String url = "http://localhost:" + this.port;
-        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/cards/{cardNumber}/update").buildAndExpand(uriVariables).toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/{cardNumber}/update").buildAndExpand(uriVariables).toUri();
 
         createdCard.setMonthlyPurchaseLimit(150000);
 
@@ -270,7 +270,7 @@ public class CardControllerIntegrationTest {
         uriVariables.put("cardNumber", createdCard.getCardNumber());
         String url = "http://localhost:" + this.port;
         URI uri = UriComponentsBuilder.fromHttpUrl(url)
-                .path("/api/cards/{cardNumber}/delete")
+                .path("/api/{cardNumber}/delete")
                 .buildAndExpand(uriVariables).toUri();
 
         ResponseEntity<ResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.DELETE, null, ResponseDto.class);
@@ -286,14 +286,14 @@ public class CardControllerIntegrationTest {
         uriVariables.put("cardNumber", "100234567891");
         String url = "http://localhost:" + this.port;
         URI uri = UriComponentsBuilder.fromHttpUrl(url)
-                .path("/api/cards/{cardNumber}/delete")
+                .path("/api/{cardNumber}/delete")
                 .buildAndExpand(uriVariables).toUri();
 
         ResponseEntity<ErrorResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.DELETE, null,  ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/cards/100234567891/delete");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/100234567891/delete");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Card not found with the given card number");
     }
 
@@ -306,7 +306,7 @@ public class CardControllerIntegrationTest {
 
         String url = "http://localhost:" + this.port;
         URI uri = UriComponentsBuilder.fromHttpUrl(url)
-                .path("/api/cards/delete")
+                .path("/api/delete")
                 .queryParam("customerId", 1L).build().toUri();
 
         ResponseEntity<ResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.DELETE, null, ResponseDto.class);
@@ -323,14 +323,14 @@ public class CardControllerIntegrationTest {
     void Should_Fail_Deleting_All_Cards() {
         String url = "http://localhost:" + this.port;
         URI uri = UriComponentsBuilder.fromHttpUrl(url)
-                .path("/api/cards/delete")
+                .path("/api/delete")
                 .queryParam("customerId", 1L).build().toUri();
 
         ResponseEntity<ErrorResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.DELETE, null, ErrorResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody().getApiPath()).isEqualTo("/api/cards/delete");
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/delete");
         assertThat(response.getBody().getErrorMessage()).isEqualTo("Cards not found with the given customer id");
     }
 }
