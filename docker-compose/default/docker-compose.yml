@@ -10,11 +10,11 @@ services:
     depends_on:
       accountsdb:
         condition: service_healthy
-      configserver:
+      eurekaserver:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
 
   cards:
     image: "omarabdelrehim8/cards:v1"
@@ -27,11 +27,11 @@ services:
     depends_on:
       cardsdb:
         condition: service_healthy
-      configserver:
+      eurekaserver:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
 
   configserver:
     image: "omarabdelrehim8/configserver:v1"
@@ -52,6 +52,28 @@ services:
     extends:
       file: common-config.yml
       service: microservice-base-config
+
+  eurekaserver:
+    image: "omarabdelrehim8/eurekaserver:v1"
+    container_name: eurekaserver-ms
+    ports:
+      - "8070:8070"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      start_period: 10s
+      timeout: 5s
+      retries: 10
+      interval: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
 
   rabbit:
     image: rabbitmq:3.13-management
