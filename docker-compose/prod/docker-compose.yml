@@ -4,6 +4,12 @@ services:
     container_name: accounts-ms
     ports:
       - "8080:8080"
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      start_period: 10s
+      timeout: 5s
+      retries: 10
+      interval: 10s
     environment:
       SPRING_APPLICATION_NAME: "accounts"
       SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
@@ -21,6 +27,12 @@ services:
     container_name: cards-ms
     ports:
       - "9000:9000"
+    healthcheck:
+      test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+      start_period: 10s
+      timeout: 5s
+      retries: 10
+      interval: 10s
     environment:
       SPRING_APPLICATION_NAME: "cards"
       SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"
@@ -75,6 +87,24 @@ services:
       file: common-config.yml
       service: microservice-configserver-config
 
+  gatewayserver:
+    image: "omarabdelrehim8/gatewayserver:v1"
+    container_name: gatewayserver-ms
+    ports:
+      - "8072:8072"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+      accounts:
+        condition: service_healthy
+      cards:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "gatewayserver"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
   rabbit:
     image: rabbitmq:3.13-management
     hostname: rabbitmq
@@ -114,4 +144,3 @@ services:
 networks:
   bank:
     driver: "bridge"
-

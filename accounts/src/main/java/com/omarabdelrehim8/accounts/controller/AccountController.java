@@ -100,11 +100,10 @@ public class AccountController {
     }
 
     @GetMapping("/customer/fetch-details")
-    public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails (
-            @RequestParam
-            @NotBlank(message = "Mobile number is required")
-            @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits")
-            String mobileNumber) {
+    public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails (@RequestParam
+                                                                    @NotBlank(message = "Mobile number is required")
+                                                                    @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits")
+                                                                    String mobileNumber) {
 
         CustomerDetailsDto customerDetailsDto = accountService.fetchCustomerDetails(mobileNumber);
 
