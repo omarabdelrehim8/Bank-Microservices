@@ -13,6 +13,7 @@ import com.omarabdelrehim8.accounts.repository.CustomerRepository;
 import com.omarabdelrehim8.accounts.service.AccountService;
 import com.omarabdelrehim8.accounts.service.client.CardsFeignClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -157,13 +158,15 @@ public class AccountServiceImpl implements AccountService {
         List<Account> accountsList = accountRepository.findByCustomerId(customer.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Accounts", "customer id"));
 
-        List<CardDto> cardsList = cardsFeignClient.fetchCardsDetails(customer.getId()).getBody();
+        ResponseEntity<List<CardDto>> cardsList = cardsFeignClient.fetchCardsDetails(customer.getId());
 
         CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(customer, new CustomerDetailsDto());
         customerDetailsDto.setAccounts(accountsList.stream()
                                                     .map(account -> AccountMapper.mapToAccountDto(account, new AccountDto()))
                                                     .toList());
-        customerDetailsDto.setCards(cardsList);
+        if (cardsList != null) {
+            customerDetailsDto.setCards(cardsList.getBody());
+        }
 
         return customerDetailsDto;
     }

@@ -3,7 +3,6 @@ package com.omarabdelrehim8.accounts.exception.handler;
 import com.omarabdelrehim8.accounts.dto.ErrorResponseDto;
 import com.omarabdelrehim8.accounts.exception.CustomerAlreadyExistsException;
 import com.omarabdelrehim8.accounts.exception.ResourceNotFoundException;
-import com.omarabdelrehim8.accounts.exception.ServerErrorException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -125,17 +124,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ServerErrorException.class)
-    public ResponseEntity<ErrorResponseDto> handleServerErrorException(Exception exception, HttpServletRequest request) {
-
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
-                request.getRequestURI(),
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                exception.getMessage(),
-                LocalDateTime.now());
-
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(ServerErrorException.class)
+//    public ResponseEntity<ErrorResponseDto> handleServerErrorException(Exception exception, HttpServletRequest request) {
+//
+//        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+//                request.getRequestURI(),
+//                HttpStatus.INTERNAL_SERVER_ERROR,
+//                exception.getMessage(),
+//                LocalDateTime.now());
+//
+//        return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleGlobalException(Exception exception, HttpServletRequest request) {

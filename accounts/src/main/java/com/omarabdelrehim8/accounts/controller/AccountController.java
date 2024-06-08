@@ -5,11 +5,14 @@ import com.omarabdelrehim8.accounts.dto.*;
 import com.omarabdelrehim8.accounts.dto.constraints.CustomerValidation;
 import com.omarabdelrehim8.accounts.dto.constraints.CustomerView;
 import com.omarabdelrehim8.accounts.service.AccountService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,7 @@ import static com.omarabdelrehim8.accounts.constants.AccountConstants.*;
 @RestController
 @RequestMapping(value = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RequiredArgsConstructor
+@Slf4j
 @Validated
 public class AccountController {
 
@@ -134,6 +138,9 @@ public class AccountController {
         }
     }
 
+    // example of retry pattern implementation, can be implemented both for a service api and inside a gateway server
+    // same can be done with ratelimiter pattern, we can limit the number of requests that an api can receive during a certain period of time
+    @Retry(name = "getBuildVersion", fallbackMethod = "getBuildVersionFallback")
     @GetMapping("/build-version")
     public ResponseEntity<String> getBuildVersion() {
         return ResponseEntity
@@ -141,6 +148,15 @@ public class AccountController {
                 .body(buildVersion);
     }
 
+    public ResponseEntity<String> getBuildVersionFallback(Throwable throwable) {
+        log.info("getBuildVersionFallback() method invoked");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("0.9");
+    }
+
+    // this approach for ratelimiter doesn't need a redis container, we can also give a fallback method like we did with @Retry
+    @RateLimiter(name = "getJavaVersion")
     @GetMapping("/java-version")
     public ResponseEntity<String> getJavaVersion() {
         return ResponseEntity

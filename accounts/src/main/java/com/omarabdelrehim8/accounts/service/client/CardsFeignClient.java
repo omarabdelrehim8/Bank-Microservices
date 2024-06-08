@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "cards")
+@FeignClient(name = "cards", fallbackFactory = CardsFallbackFactory.class)
 public interface CardsFeignClient {
 
     @GetMapping(value = "/api/fetch", consumes = "application/json")
