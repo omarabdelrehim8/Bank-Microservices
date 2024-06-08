@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public class FilterUtility {
 
-    public static final String CORRELATION_ID = "covetousbank-correlation-id";
+    public static final String CORRELATION_ID = "bank-correlation-id";
 
     // CHECKS IF THERE IS A HEADER WITH THE GIVEN NAME AND RETURNS ITS VALUE IF TRUE
     public String getCorrelationId(HttpHeaders requestHeaders) {

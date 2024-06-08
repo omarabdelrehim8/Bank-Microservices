@@ -26,12 +26,12 @@ public class RequestTraceFilter implements GlobalFilter {
         HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
 
         if (isCorrelationIdPresent(requestHeaders)) {
-            log.debug("covetousbank-correlation-id found in RequestTraceFilter: {}",
+            log.debug("bank-correlation-id found in RequestTraceFilter: {}",
                     filterUtility.getCorrelationId(requestHeaders));
         } else {
             String correlationId = generateCorrelationId();
             exchange = filterUtility.setCorrelationId(exchange, correlationId);
-            log.debug("covetousbank-correlation-id generated in RequestTraceFilter: {}", correlationId);
+            log.debug("bank-correlation-id generated in RequestTraceFilter: {}", correlationId);
         }
 
         return chain.filter(exchange);
