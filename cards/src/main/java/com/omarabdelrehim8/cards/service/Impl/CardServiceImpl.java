@@ -125,6 +125,19 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    public boolean deleteCardsByAccountNumber(Long accountNumber) {
+        Optional<List<Card>> cardsList = cardRepository.findAllByAccountNumber(accountNumber);
+
+        if (cardsList.isEmpty() || cardsList.get().isEmpty()) {
+            throw new CustomResourceNotFoundException("Cards", "account number");
+        }
+
+        cardRepository.deleteAll(cardsList.get());
+
+        return true;
+    }
+
+    @Override
     public boolean deleteAllCards(Long customerId) {
         Optional<List<Card>> cardsList = cardRepository.findAllByCustomerId(customerId);
 

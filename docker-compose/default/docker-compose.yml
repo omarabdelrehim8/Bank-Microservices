@@ -135,9 +135,9 @@ services:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
       timeout: 10s
       retries: 10
-      extends:
-        file: common-config.yml
-        service: network-deploy-service
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   accountsdb:
     container_name: accountsdb

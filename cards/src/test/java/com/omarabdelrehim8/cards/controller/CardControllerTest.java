@@ -286,6 +286,56 @@ public class CardControllerTest {
     }
 
     @Test
+    void Should_Succeed_Deleting_All_Cards_By_Account_Number_When_Input_Data_Is_Valid() throws Exception {
+        when(cardService.deleteCardsByAccountNumber(anyLong())).thenReturn(true);
+
+        ResultActions response = mockMvc.perform(delete("/api/delete")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .param("accountNumber", "1023456871"))
+                                        .andExpect(handler().handlerType(CardController.class))
+                                        .andExpect(handler().methodName("deleteCardsByAccountNumber"));
+
+        verify(cardService, times(1)).deleteCardsByAccountNumber(anyLong());
+
+        response.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.statusCode").value(200))
+                .andExpect(jsonPath("$.statusMessage").value("Request processed successfully"));
+    }
+
+    @Test
+    void Should_Fail_Deleting_All_Cards_By_Account_Number_When_Input_Data_Is_Not_Valid() throws Exception {
+        ResultActions response = mockMvc.perform(delete("/api/delete")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .param("accountNumber", "0"))
+                                        .andExpect(handler().handlerType(CardController.class))
+                                        .andExpect(handler().methodName("deleteCardsByAccountNumber"));
+
+        response.andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errorCode").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.errorMessage")
+                        .value("[accountNumber: Account Number must be 10 digits]"));
+    }
+
+    @Test
+    void Should_Fail_Deleting_All_Cards_By_Account_Number_When_Card_Service_Fails() throws Exception {
+        when(cardService.deleteCardsByAccountNumber(anyLong())).thenReturn(false);
+
+        ResultActions response = mockMvc.perform(delete("/api/delete")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .param("accountNumber", "1023456871"))
+                                        .andExpect(handler().handlerType(CardController.class))
+                                        .andExpect(handler().methodName("deleteCardsByAccountNumber"));
+
+        response.andExpect(status().isExpectationFailed())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errorCode").value("EXPECTATION_FAILED"))
+                .andExpect(jsonPath("$.errorMessage")
+                        .value("Delete operation failed. Please try again or contact our customer service"));
+    }
+
+    @Test
     void Should_Succeed_Deleting_All_Cards_When_Input_Data_Is_Valid() throws Exception {
         when(cardService.deleteAllCards(anyLong())).thenReturn(true);
 

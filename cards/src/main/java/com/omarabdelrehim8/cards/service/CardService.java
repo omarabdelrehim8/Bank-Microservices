@@ -46,6 +46,14 @@ public interface CardService {
     boolean deleteCard(String cardNumber);
 
     /**
+     * Delete Cards By Account Number
+     *
+     * @param accountNumber - Input accountNumber
+     * @return boolean indicating if the deletion of card details was successful or not
+     */
+    boolean deleteCardsByAccountNumber(Long accountNumber);
+
+    /**
      * Delete All Cards
      * @param customerId
      * @return boolean indicating if the deletion of all cards details was successful or not

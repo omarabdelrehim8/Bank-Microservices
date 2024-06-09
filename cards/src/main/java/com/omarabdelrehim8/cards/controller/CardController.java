@@ -127,7 +127,31 @@ public class CardController {
         }
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping(value = "/delete", params = "accountNumber")
+    @JsonView(CardView.OnDelete.class)
+    public ResponseEntity<?> deleteCardsByAccountNumber (HttpServletRequest request,
+                                                        @RequestParam
+                                                        @NotNull(message = "Account number is required")
+                                                        @Pattern(regexp="(^$|[0-9]{10})",message = "Account Number must be 10 digits")
+                                                        String accountNumber) {
+
+        boolean isDeleted = cardService.deleteCardsByAccountNumber(Long.parseLong(accountNumber));
+
+        if(isDeleted) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(HttpStatus.OK.value(), MESSAGE_200));
+        }else{
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ErrorResponseDto(request.getRequestURI(),
+                            HttpStatus.EXPECTATION_FAILED,
+                            MESSAGE_417_DELETE,
+                            LocalDateTime.now()));
+        }
+    }
+
+    @DeleteMapping(value = "/delete", params = "customerId")
     @JsonView(CardView.OnDelete.class)
     public ResponseEntity<?> deleteAllCards (HttpServletRequest request, @RequestParam
                                                                          @NotNull(message = "Customer ID is required")

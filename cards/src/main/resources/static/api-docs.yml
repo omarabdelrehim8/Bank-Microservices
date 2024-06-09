@@ -235,6 +235,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error_Response'
+  /api//delete:
+    delete:
+      tags:
+        - CRUD REST APIs For Cards Microservice
+      summary: Delete Cards By Account Number
+      description: REST API to delete all cards with the same Account Number.
+      operationId: deleteCardsByAccountNumber
+      parameters:
+        - name: accountNumber
+          in: query
+          required: true
+          schema:
+            pattern: (^$|[0-9]{10})
+            type: string
+      responses:
+        '200':
+          description: HTTP Status OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Successful_Response_OnUpdateAndOnDelete'
+        '400':
+          description: HTTP Status BAD REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_Response'
+        '404':
+          description: HTTP Status NOT FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_Response'
+        '500':
+          description: HTTP Status INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error_Response'
   /api/build-version:
     get:
       tags:

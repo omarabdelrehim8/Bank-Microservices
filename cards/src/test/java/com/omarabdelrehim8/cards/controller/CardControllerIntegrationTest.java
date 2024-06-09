@@ -298,6 +298,43 @@ public class CardControllerIntegrationTest {
     }
 
     @Test
+    void Should_Succeed_Deleting_All_Cards_By_Account_Number() {
+        // add card to db and get the created card inside a variable
+        cardService.createDebitCard(1L, 1076368322L);
+        cardService.createDebitCard(1L, 1076368322L);
+        cardService.createCreditCard(1L, 1076368322L);
+
+        String url = "http://localhost:" + this.port;
+        URI uri = UriComponentsBuilder.fromHttpUrl(url)
+                .path("/api/delete")
+                .queryParam("accountNumber", 1076368322L).build().toUri();
+
+        ResponseEntity<ResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.DELETE, null, ResponseDto.class);
+
+        List<Card> cardsList = cardRepository.findAllByAccountNumber(1076368322L).get();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getStatusCode()).isEqualTo(200);
+        assertThat(response.getBody().getStatusMessage()).isEqualTo("Request processed successfully");
+        assertThat(cardsList.isEmpty()).isTrue();
+    }
+
+    @Test
+    void Should_Fail_Deleting_All_Cards_By_Account_Number() {
+        String url = "http://localhost:" + this.port;
+        URI uri = UriComponentsBuilder.fromHttpUrl(url)
+                .path("/api/delete")
+                .queryParam("accountNumber", 1076368322L).build().toUri();
+
+        ResponseEntity<ErrorResponseDto> response = testRestTemplate.exchange(uri, HttpMethod.DELETE, null, ErrorResponseDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getErrorCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().getApiPath()).isEqualTo("/api/delete");
+        assertThat(response.getBody().getErrorMessage()).isEqualTo("Cards not found with the given account number");
+    }
+
+    @Test
     void Should_Succeed_Deleting_All_Cards() {
         // add card to db and get the created card inside a variable
         cardService.createDebitCard(1L, 1076368322L);

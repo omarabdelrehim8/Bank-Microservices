@@ -220,6 +220,26 @@ public class CardServiceTest {
     }
 
     @Test
+    void Should_Return_True_After_Deleting_All_Cards_By_Account_Number() {
+        List<Card> cardsList = List.of(card);
+        when(cardRepository.findAllByAccountNumber(card.getAccountNumber())).thenReturn(Optional.of(cardsList));
+
+        Boolean result = cardService.deleteCardsByAccountNumber(card.getAccountNumber());
+
+        assertThat(result).isTrue();
+        verify(cardRepository, times(1)).deleteAll(eq(cardsList));
+    }
+
+    @Test
+    void Deleting_All_Cards_By_Account_Number_Should_Throw_Custom_Resource_Not_Found_Exception() {
+        assertThatThrownBy(() -> cardService.deleteCardsByAccountNumber(anyLong()))
+                .isInstanceOf(CustomResourceNotFoundException.class)
+                .hasMessage("Cards not found with the given account number");
+
+        verify(cardRepository, never()).deleteAll(anyList());
+    }
+
+    @Test
     void Should_Return_True_After_Deleting_All_Cards() {
         List<Card> cardsList = List.of(card);
         when(cardRepository.findAllByCustomerId(card.getCustomerId())).thenReturn(Optional.of(cardsList));
