@@ -1,0 +1,680 @@
+{
+	"info": {
+		"_postman_id": "bce28ccd-9a94-4bd3-a318-ca5cefb6f42d",
+		"name": "Bank Microservices",
+		"description": "Rest APIs for Bank Microservices Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29993648"
+	},
+	"item": [
+		{
+			"name": "GatewayServer",
+			"item": [
+				{
+					"name": "Accounts",
+					"item": [
+						{
+							"name": "Create Account For New Customer",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Sunny Rain\",\r\n    \"email\": \"test@gmail.com\",\r\n    \"mobileNumber\": \"0123456789\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add Account To Existing Customer",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Sunny Rain\",\r\n    \"email\": \"test@gmail.com\",\r\n    \"mobileNumber\": \"0123456789\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Accounts Details",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/fetch-details?customerId=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"fetch-details"
+									],
+									"query": [
+										{
+											"key": "customerId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Customer Details",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/customer/fetch-details?mobileNumber=0123456789",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"customer",
+										"fetch-details"
+									],
+									"query": [
+										{
+											"key": "mobileNumber",
+											"value": "0123456789"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Customer Details",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customerId\": 2,\r\n    \"email\": \"test@gmail.com\",\r\n    \"mobileNumber\": \"0123456789\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/customer/update-details",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"customer",
+										"update-details"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Account",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/1165979159/delete",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"1165979159",
+										"delete"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Build Version",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/build-version",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"build-version"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Java Version",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/java-version",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"java-version"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Contact Info",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/api/contact-info",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"api",
+										"contact-info"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Shutdown",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/accounts/actuator/shutdown",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"accounts",
+										"actuator",
+										"shutdown"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Accounts Microservice APIs"
+				},
+				{
+					"name": "Cards",
+					"item": [
+						{
+							"name": "Create Debit Card",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customerId\": 1,\r\n    \"accountNumber\": 1114504328\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/create/debit-card",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"create",
+										"debit-card"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Credit Card",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customerId\": 15,\r\n    \"accountNumber\": 1114504328\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/create/credit-card",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"create",
+										"credit-card"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch Cards",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/fetch?customerId=15",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"fetch"
+									],
+									"query": [
+										{
+											"key": "customerId",
+											"value": "15"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Card Purchase Limit",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"monthlyPurchaseLimit\": 5000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/100846002863/update",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"100846002863",
+										"update"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Card",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/100031563230/delete",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"100031563230",
+										"delete"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Cards By Account Number",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/delete?accountNumber=1388402649",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"delete"
+									],
+									"query": [
+										{
+											"key": "accountNumber",
+											"value": "1388402649"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete All Cards",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/delete?customerId=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"delete"
+									],
+									"query": [
+										{
+											"key": "customerId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Build Version",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/build-version",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"build-version"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Java Version",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/java-version",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"java-version"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Contact Info",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/api/contact-info",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"api",
+										"contact-info"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Shutdown",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/bank/cards/actuator/shutdown",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"bank",
+										"cards",
+										"actuator",
+										"shutdown"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "Cards Microservice APIs"
+				}
+			],
+			"description": "Gateway Service that handles the incoming clients requests and outgoing microservices responses"
+		},
+		{
+			"name": "ConfigServer",
+			"item": [
+				{
+					"name": "Encrypt",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "omarabdelrehim8@gmail.com",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8071/encrypt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8071",
+							"path": [
+								"encrypt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Decrypt",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "3ae3c94eb5b933234a9a06d9ad28a31c98c885de5a733e7d2566f5f56b005c793252693d0a1aa2ba825fafe12a08aecd",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8071/decrypt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8071",
+							"path": [
+								"decrypt"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Central service that holds all the externalized config files"
+		},
+		{
+			"name": "EurekaServer",
+			"item": [
+				{
+					"name": "Get Registered Apps Info",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8070/eureka/apps",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8070",
+							"path": [
+								"eureka",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Service discovery agent, acts like a registry that holds info like name, ip address etc. of all the microservices that are registered to it"
+		}
+	]
+}
