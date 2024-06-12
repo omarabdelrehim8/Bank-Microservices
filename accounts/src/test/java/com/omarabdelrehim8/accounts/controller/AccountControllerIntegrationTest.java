@@ -17,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -31,10 +32,12 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("needs external dependencies mocking/disabling, currently it doesn't work")
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestPropertySource("/application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccountControllerIntegrationTest {
 
@@ -167,7 +170,6 @@ public class AccountControllerIntegrationTest {
     }
 
     @Test
-    @Disabled("Needs feign client mock")
     void Should_Succeed_Fetching_Customer_Details() {
         String url = "http://localhost:" + this.port;
         URI uri = UriComponentsBuilder.fromHttpUrl(url).path("/api/customer/fetch-details")

@@ -55,4 +55,11 @@ public interface AccountService {
      * @return A boolean based off of the outcome of the operation
      */
     boolean updateCustomerDetails(CustomerDto customerDto);
+
+    /**
+     * Update BrokerCommunication Status
+     * @param accountNumber - Long
+     * @return boolean indicating if the result of the update operation is successful or not
+     */
+    boolean updateCommunicationStatus(Long accountNumber);
 }

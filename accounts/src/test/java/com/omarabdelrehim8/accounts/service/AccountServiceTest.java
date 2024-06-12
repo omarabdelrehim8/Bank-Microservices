@@ -12,6 +12,7 @@ import com.omarabdelrehim8.accounts.repository.AccountRepository;
 import com.omarabdelrehim8.accounts.repository.CustomerRepository;
 import com.omarabdelrehim8.accounts.service.client.CardsFeignClient;
 import com.omarabdelrehim8.accounts.service.impl.AccountServiceImpl;
+import com.omarabdelrehim8.accounts.service.messagebroker.BrokerCommunication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -48,11 +49,15 @@ public class AccountServiceTest {
     @Mock
     private CardsFeignClient cardsFeignClient;
 
+    @Mock
+    private BrokerCommunication brokerCommunication;
+
     @InjectMocks
     private AccountServiceImpl accountService;
 
     private CustomerDto customerDto;
     private Customer customer;
+    private Account account;
     private AccountCreationResponseDto response;
 
     @BeforeEach
@@ -62,7 +67,13 @@ public class AccountServiceTest {
         customerDto.setEmail("regisaether@gmail.com");
         customerDto.setMobileNumber("1234567891");
 
+        account = new Account();
+        account.setAccountNumber(1654798325L);
+        account.setAccountType("Savings");
+        account.setBranchAddress("123 Main Street, New York");
+
         customer = new Customer(1L, "Regis Aether", "regisaether@gmail.com", "1234567891");
+        customer.setAccounts(List.of(account));
     }
 
     @Test
@@ -81,10 +92,11 @@ public class AccountServiceTest {
 
     @Test
     void Create_New_Account_Should_Create_New_Account_For_Given_Customer() {
-
         when(customerRepository.findByMobileNumberOrEmail(eq("1234567891"), eq("regisaether@gmail.com")))
                 .thenReturn(Optional.empty());
         when(customerRepository.saveAndFlush(any(Customer.class))).thenReturn(customer);
+
+        doNothing().when(brokerCommunication).sendCommunication(any(), any());
 
         response = accountService.createAccountForNewCustomer(customerDto);
 
@@ -136,6 +148,8 @@ public class AccountServiceTest {
 
         when(customerRepository.findByNameAndMobileNumberAndEmail(eq("Regis Aether"), eq("1234567891"), eq("regisaether@gmail.com")))
                 .thenReturn(Optional.ofNullable(customer));
+
+        doNothing().when(brokerCommunication).sendCommunication(any(), any());
 
         response = accountService.addAccountForExistingCustomer(customerDto);
 
@@ -211,7 +225,7 @@ public class AccountServiceTest {
 
     @Test
     void Should_Return_Customer_Details() {
-        Account account = new Account(customer, 1023546878L, "Savings", "123 Main Street, New York");
+        Account account = new Account(customer, 1023546878L, "Savings", "123 Main Street, New York", false);
 
         List<Account> accountsList = new ArrayList<>();
         accountsList.add(account);

@@ -63,11 +63,11 @@ public class AccountRepositoryIntegrationTest {
 
       customerRepository.saveAll(customers);
 
-      List<Account> accounts = List.of(new Account(customers.get(0), 1234567891L, "Savings", "123 Main Street, New York"),
-                            new Account(customers.get(0), 1234567892L, "Savings", "123 Main Street, New York"),
-                            new Account(customers.get(0), 1234567893L, "Savings", "123 Main Street, New York"),
-                            new Account(customers.get(1), 1234567894L, "Savings", "123 Main Street, New York"),
-                            new Account(customers.get(2), 1234567895L, "Savings", "123 Main Street, New York"));
+      List<Account> accounts = List.of(new Account(customers.get(0), 1234567891L, "Savings", "123 Main Street, New York", false),
+                            new Account(customers.get(0), 1234567892L, "Savings", "123 Main Street, New York", false),
+                            new Account(customers.get(0), 1234567893L, "Savings", "123 Main Street, New York", false),
+                            new Account(customers.get(1), 1234567894L, "Savings", "123 Main Street, New York", false),
+                            new Account(customers.get(2), 1234567895L, "Savings", "123 Main Street, New York", false));
 
         accountRepository.saveAll(accounts);
     }

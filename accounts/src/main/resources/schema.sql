@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS account (
   account_number int PRIMARY KEY,
   account_type varchar(20) NOT NULL,
   branch_address varchar(100) NOT NULL,
+  communication_sw boolean,
   created_at date NOT NULL,
   created_by varchar(20) NOT NULL,
   updated_at date DEFAULT NULL,

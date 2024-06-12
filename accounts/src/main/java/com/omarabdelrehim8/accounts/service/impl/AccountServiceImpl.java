@@ -12,7 +12,9 @@ import com.omarabdelrehim8.accounts.repository.AccountRepository;
 import com.omarabdelrehim8.accounts.repository.CustomerRepository;
 import com.omarabdelrehim8.accounts.service.AccountService;
 import com.omarabdelrehim8.accounts.service.client.CardsFeignClient;
+import com.omarabdelrehim8.accounts.service.messagebroker.BrokerCommunication;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -23,18 +25,18 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
     private final CardsFeignClient cardsFeignClient;
+    private final BrokerCommunication brokerCommunication;
 
     @Override
     public AccountCreationResponseDto createAccountForNewCustomer(CustomerDto customerDto) {
 
         Customer newCustomer = CustomerMapper.mapToCustomer(customerDto, new Customer());
-
-
 
         // check if customer is already registered
         Optional<Customer> customer = customerRepository.findByMobileNumberOrEmail(newCustomer.getMobileNumber(), newCustomer.getEmail());
@@ -69,6 +71,9 @@ public class AccountServiceImpl implements AccountService {
         // save customer and through @OneToMany many relationship also save the account
         Customer savedCustomer = customerRepository.saveAndFlush(newCustomer);
 
+        // send message to message broker
+        brokerCommunication.sendCommunication(savedCustomer.getAccounts().get(0), savedCustomer);
+
         return AccountCreationResponseDto.builder()
                 .customerId(savedCustomer.getId())
                 .accountNumber(newAccount.getAccountNumber())
@@ -87,6 +92,8 @@ public class AccountServiceImpl implements AccountService {
         Account newAccount = createAccountInstance();
         newAccount.setCustomer(existingCustomer);
         accountRepository.save(newAccount);
+
+        brokerCommunication.sendCommunication(newAccount, existingCustomer);
 
         return AccountCreationResponseDto.builder()
                 .customerId(existingCustomer.getId())
@@ -185,4 +192,22 @@ public class AccountServiceImpl implements AccountService {
 
         return isUpdated = true;
     }
+
+    @Override
+    public boolean updateCommunicationStatus(Long accountNumber) {
+        boolean isUpdated = false;
+
+        if (accountNumber != null) {
+            Account account = accountRepository.findByAccountNumber(accountNumber)
+                    .orElseThrow(() -> new ResourceNotFoundException("Account", "account number"));
+
+            account.setCommunicationSw(true);
+            accountRepository.save(account);
+
+            isUpdated = true;
+        }
+
+        return isUpdated;
+    }
+
 }
