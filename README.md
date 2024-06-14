@@ -16,8 +16,7 @@ Welcome to the **Bank-Microservices** project! This project showcases the implem
 
 ## Architecture
 
-The architecture of this project consists of multiple microservices, each responsible for a specific aspect inside the architecture. The services communicate with each other using REST APIs and Kafka for messaging, and are managed through a central configuration server and a service discovery mechanism.
-
+The architecture of this project consists of multiple microservices, each responsible for a specific aspect inside the architecture. The services communicate with each other using REST APIs and Kafka for messaging, and are managed through a central configuration server and a service discovery mechanism. The central configuration server pulls the properties files from another github repository called "Bank-Microservices-Config", once pulled, the properties are distributed to the correct microservices through the help of Kafka and Spring Cloud Bus.
 
 ## Services
 
