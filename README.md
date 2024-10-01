@@ -1,6 +1,6 @@
 # Bank-Microservices
 
-Welcome to the **Bank-Microservices** project! This project showcases the implementation of a microservices architecture using Java and Spring Boot. It demonstrates how to build, deploy, and manage a set of loosely coupled, independently deployable services that work together to simulate a simple banking system.
+Welcome to the **Bank-Microservices** project! This project showcases the implementation of a microservices architecture using Java and Spring Boot. It demonstrates how to build, deploy, and manage a set of loosely coupled, independently deployable services that work together to simulate a simple banking themed system.
 
 ## Table of Contents
 - [Architecture](#architecture)
